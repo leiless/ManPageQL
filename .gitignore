@@ -1,0 +1,13 @@
+.DS_Store
+*~
+*.swp
+*.o
+*.out
+*.plist
+*.plist~
+*.qlgenerator/
+*.dSYM/
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+

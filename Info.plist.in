@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BuildMachineClangVersion</key>
+	<string>__CLANG_VERSION__</string>
+	<key>BuildMachineOSBuild</key>
+	<string>__OS_BUILD__</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>__DEV_LANG__</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>QLGenerator</string>
+			<key>LSItemContentTypes</key>
+			<array>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>__PLUGIN_NAME__</string>
+	<key>CFBundleIdentifier</key>
+	<string>__PLUGIN_BID__</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>__PLUGIN_NAME__</string>
+	<key>CFBundleShortVersionString</key>
+	<string>__PLUGIN_VERSION__</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>MacOSX</string>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>__PLUGIN_BUILD__</string>
+	<key>CFPlugInDynamicRegisterFunction</key>
+	<string></string>
+	<key>CFPlugInDynamicRegistration</key>
+	<string>NO</string>
+	<key>CFPlugInFactories</key>
+	<dict>
+		<key>__UUID__</key>
+		<string>QuickLookGeneratorPluginFactory</string>
+	</dict>
+	<key>CFPlugInTypes</key>
+	<dict>
+		<key>5E2D9680-5022-40FA-B806-43349622E5B9</key>
+		<array>
+			<string>__UUID__</string>
+		</array>
+	</dict>
+	<key>CFPlugInUnloadFunction</key>
+	<string></string>
+	<!-- Change following property to <true/> if the generators needs
+		to be run on main thread. -->
+	<key>QLNeedsToBeRunInMainThread</key>
+	<true/>
+	<!-- Change following property to <true/> if the generators
+		supports multiple concurrent requests. -->
+	<key>QLSupportsConcurrentRequests</key>
+	<false/>
+	<!-- Change following properties to indicate the preview size to use
+		if preview generation takes too long. -->
+	<key>QLPreviewWidth</key>
+	<real>800</real>
+	<key>QLPreviewHeight</key>
+	<real>600</real>
+	<key>QLThumbnailMinimumSize</key>
+	<real>16</real>
+</dict>
+</plist>
+
