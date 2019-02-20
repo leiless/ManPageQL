@@ -80,7 +80,6 @@ CFLAGS+=	-mmacosx-version-min=10.5
 endif
 CFLAGS+=	$(SDKFLAGS) \
 		$(ARCHFLAGS) \
-		-x objective-c \
 		-std=c99 \
 		-fmodules \
 		-fno-common
@@ -102,16 +101,21 @@ LDFLAGS+=	$(SDKFLAGS) \
 		-Xlinker -export_dynamic \
 		-bundle
 
-# source, header, object and make files
+# source, object files
 SRCS:=		$(wildcard src/*.m)
+SRCS+=		$(wildcard src/*.c)
 OBJS:=		$(SRCS:.m=.o)
+OBJS:=		$(OBJS:.c=.o)
 
 
 # targets
 all: debug
 
+%.o: %.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -x c -c -o $@ $<
+
 %.o: %.m
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) -x objective-c -c -o $@ $<
 
 $(PLUGIN_MACHO): $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^
