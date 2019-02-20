@@ -6,8 +6,9 @@
  *	/usr/local/share/man
  *
  * see:
- * http://xr.junkman.cn/source/xref/mandoc/main.c#189
- * https://github.com/sizeofvoid/ifconfigd/blob/master/usr/src/usr.bin/mandoc/main.c
+ *  https://github.com/sizeofvoid/ifconfigd/blob/master/usr/src/usr.bin/mandoc/main.c
+ *  mandoc/main.c#189
+ *  mandoc/demandoc.c
  */
 
 #include <stdio.h>
@@ -60,6 +61,9 @@ struct curparse {
 };
 
 static void usage(void);
+static void parse(struct curparse *curp, int, const char *);
+static void outdata_alloc(struct curparse *);
+static void print_meta(const struct roff_meta *);
 
 void usage(void)
 {
@@ -67,8 +71,6 @@ void usage(void)
     exit(-1);
     __builtin_unreachable();
 }
-
-static void parse(struct curparse *curp, int, const char *);
 
 int main(int argc, char *argv[])
 {
@@ -105,11 +107,13 @@ int main(int argc, char *argv[])
 
     if (fstat(fd, &st) < 0) {
         LOG_ERR("fstat(2) fail  path: %s fd: %d errno: %d", path, fd, errno);
+        (void) close(fd);
         e = 2;
         goto out_exit;
     }
     if (!S_ISREG(st.st_mode)) {
         LOG_ERR("path %s isn't regular file?  mode: %#x", path, st.st_mode);
+        (void) close(fd);
         e = 3;
         goto out_exit;
     }
@@ -134,16 +138,12 @@ extern void html_mdoc(void *, const struct roff_meta *);
 extern void html_man(void *, const struct roff_meta *);
 extern void *html_alloc(const struct manoutput *);
 
-static void outdata_alloc(struct curparse *);
-
 void outdata_alloc(struct curparse *curp)
 {
     ASSERT_NONNULL(curp);
     ASSERT(curp->outtype == OUTT_HTML);
     curp->outdata = html_alloc(curp->outopts);
 }
-
-static void print_meta(const struct roff_meta *);
 
 void print_meta(const struct roff_meta *meta)
 {
