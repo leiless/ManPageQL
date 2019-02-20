@@ -3,8 +3,8 @@
 #
 
 PLUGIN_NAME=ManPageQL
-PLUGIN_VERSION=0000.00.01
-PLUGIN_BUILD=0
+PLUGIN_VERSION=0000.00.02
+PLUGIN_BUILD:=$(shell ./bump_build.sh)
 BUNDLE_DOMAIN=cn.junkman
 #
 # Supported UTI types(use space to separate each one)
