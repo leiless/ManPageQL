@@ -60,9 +60,10 @@ struct curparse {
 };
 
 static void usage(void);
-static void parse(struct curparse *curp, int, const char *);
 static void outdata_alloc(struct curparse *);
 static void print_meta(const struct roff_meta *);
+static int parse(const char *path);
+static void do_parse(struct curparse *curp, int, const char *);
 
 void usage(void)
 {
@@ -73,16 +74,25 @@ void usage(void)
 
 int main(int argc, char *argv[])
 {
+    if (argc != 2) usage();
+    return parse(argv[1]);
+}
+
+/**
+ * Parse a man page file
+ * @path        which file
+ * @return      0 if no error  error o.w.
+ */
+static int parse(const char *path)
+{
     int e = 0;
     struct manconf conf;
     struct curparse curp;
     int options;
-    char *path;
     int fd;
     struct stat st;
 
-    if (argc != 2) usage();
-    path = argv[1];
+    ASSERT_NONNULL(path);
 
     (void) memset(&conf, 0, sizeof(conf));
     (void) memset(&curp, 0, sizeof(curp));
@@ -120,7 +130,7 @@ int main(int argc, char *argv[])
         goto out_exit;
     }
 
-    parse(&curp, fd, path);
+    do_parse(&curp, fd, path);
 
 out_exit:
     mparse_free(curp.mp);
@@ -147,27 +157,7 @@ void outdata_alloc(struct curparse *curp)
     curp->outdata = html_alloc(curp->outopts);
 }
 
-void print_meta(const struct roff_meta *meta)
-{
-    ASSERT_NONNULL(meta);
-
-    if (meta->title != NULL)
-        LOG("title = \"%s\"", meta->title);
-    if (meta->name != NULL)
-        LOG("name  = \"%s\"", meta->name);
-    if (meta->msec != NULL)
-        LOG("sec   = \"%s\"", meta->msec);
-    if (meta->vol != NULL)
-        LOG("vol   = \"%s\"", meta->vol);
-    if (meta->arch != NULL)
-        LOG("arch  = \"%s\"", meta->arch);
-    if (meta->os != NULL)
-        LOG("os    = \"%s\"", meta->os);
-    if (meta->date != NULL)
-        LOG("date  = \"%s\"", meta->date);
-}
-
-void parse(struct curparse *curp, int fd, const char *path)
+void do_parse(struct curparse *curp, int fd, const char *path)
 {
     struct roff_meta *meta;
 
@@ -193,5 +183,25 @@ void parse(struct curparse *curp, int fd, const char *path)
     } else {
         /* TODO: better user interaction? */
     }
+}
+
+void print_meta(const struct roff_meta *meta)
+{
+    ASSERT_NONNULL(meta);
+
+    if (meta->title != NULL)
+        LOG("title = \"%s\"", meta->title);
+    if (meta->name != NULL)
+        LOG("name  = \"%s\"", meta->name);
+    if (meta->msec != NULL)
+        LOG("sec   = \"%s\"", meta->msec);
+    if (meta->vol != NULL)
+        LOG("vol   = \"%s\"", meta->vol);
+    if (meta->arch != NULL)
+        LOG("arch  = \"%s\"", meta->arch);
+    if (meta->os != NULL)
+        LOG("os    = \"%s\"", meta->os);
+    if (meta->date != NULL)
+        LOG("date  = \"%s\"", meta->date);
 }
 
