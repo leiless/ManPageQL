@@ -55,7 +55,6 @@ struct curparse {
     struct manoutput *outopts;  /* output options */
     void *outdata;              /* data for output */
     char *os_s;                 /* operating system for display */
-    int wstop;                  /* stop after a file with a warning */
     enum mandoc_os os_e;        /* check base system conventions */
     enum outt outtype;          /* which output to use */
 };
@@ -89,8 +88,11 @@ int main(int argc, char *argv[])
     (void) memset(&curp, 0, sizeof(curp));
     curp.outtype = OUTT_HTML;
     curp.outopts = &conf.output;
+    /* ASK: do we need MPARSE_SO flag */
     options = MPARSE_SO | MPARSE_UTF8 | MPARSE_LATIN1 | MPARSE_VALIDATE;
 
+    /* Print parse warning to `stderr' */
+    mandoc_msg_setoutfile(stderr);
     mandoc_msg_setmin(MANDOCERR_WARNING);
 
     mchars_alloc();
@@ -107,14 +109,14 @@ int main(int argc, char *argv[])
 
     if (fstat(fd, &st) < 0) {
         LOG_ERR("fstat(2) fail  path: %s fd: %d errno: %d", path, fd, errno);
-        (void) close(fd);
         e = 2;
+        (void) close(fd);
         goto out_exit;
     }
     if (!S_ISREG(st.st_mode)) {
-        LOG_ERR("path %s isn't regular file?  mode: %#x", path, st.st_mode);
-        (void) close(fd);
         e = 3;
+        (void) close(fd);
+        LOG_ERR("path %s isn't regular file?  mode: %#x", path, st.st_mode);
         goto out_exit;
     }
 
@@ -147,6 +149,8 @@ void outdata_alloc(struct curparse *curp)
 
 void print_meta(const struct roff_meta *meta)
 {
+    ASSERT_NONNULL(meta);
+
     if (meta->title != NULL)
         LOG("title = \"%s\"", meta->title);
     if (meta->name != NULL)
@@ -184,9 +188,10 @@ void parse(struct curparse *curp, int fd, const char *path)
 
     if (meta->macroset == MACROSET_MDOC) {
         html_mdoc(curp->outdata, meta);
-    } else {
-        ASSERT(meta->macroset == MACROSET_MAN);
+    } else if (meta->macroset == MACROSET_MAN) {
         html_man(curp->outdata, meta);
+    } else {
+        /* TODO: better user interaction? */
     }
 }
 
