@@ -63,7 +63,7 @@ static void usage(void);
 static void outdata_alloc(struct curparse *);
 static void print_meta(const struct roff_meta *);
 static int parse(const char *path);
-static void do_parse(struct curparse *curp, int, const char *);
+static int do_parse(struct curparse *curp, int, const char *);
 
 void usage(void)
 {
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
  */
 static int parse(const char *path)
 {
-    int e = 0;
+    int e;
     struct manconf conf;
     struct curparse curp;
     int options;
@@ -130,7 +130,7 @@ static int parse(const char *path)
         goto out_exit;
     }
 
-    do_parse(&curp, fd, path);
+    e = do_parse(&curp, fd, path);
 
 out_exit:
     mparse_free(curp.mp);
@@ -157,8 +157,9 @@ void outdata_alloc(struct curparse *curp)
     curp->outdata = html_alloc(curp->outopts);
 }
 
-void do_parse(struct curparse *curp, int fd, const char *path)
+int do_parse(struct curparse *curp, int fd, const char *path)
 {
+    int e = 0;
     struct roff_meta *meta;
 
     ASSERT_NONNULL(curp);
@@ -181,8 +182,10 @@ void do_parse(struct curparse *curp, int fd, const char *path)
     } else if (meta->macroset == MACROSET_MAN) {
         html_man(curp->outdata, meta);
     } else {
-        /* TODO: better user interaction? */
+        e = 4;      /* Unsupported macroset */
     }
+
+    return e;
 }
 
 void print_meta(const struct roff_meta *meta)
