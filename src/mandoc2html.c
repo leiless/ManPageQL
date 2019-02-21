@@ -24,6 +24,8 @@
 #include "mandoc_parse.h"
 #include "manconf.h"
 
+#include "mandoc2html.h"
+
 #define UNUSED(a0, ...)         (void) ((void) a0, ##__VA_ARGS__)
 
 #define LOG(fmt, ...)           fprintf(stderr, fmt "\n",  ##__VA_ARGS__)
@@ -54,7 +56,7 @@ struct curparse {
     struct mparse *mp;
     struct manoutput *outopts;  /* output options */
     void *outdata;              /* data for output */
-    char *os_s;                 /* operating system for display */
+    char *os_s;                 /* operating system for display(nullable) */
     enum mandoc_os os_e;        /* check base system conventions */
     enum outt outtype;          /* which output to use */
 };
@@ -78,12 +80,17 @@ int main(int argc, char *argv[])
     return parse(argv[1]);
 }
 
+inline int mandoc2html(const char *path)
+{
+    return parse(path);
+}
+
 /**
  * Parse a man page file
  * @path        which file
- * @return      0 if no error  error o.w.
+ * @return      0 if no error  error code o.w.
  */
-static int parse(const char *path)
+int parse(const char *path)
 {
     int e;
     struct manconf conf;
@@ -113,18 +120,18 @@ static int parse(const char *path)
     fd = mparse_open(curp.mp, path);
     if (fd < 0) {
         LOG_ERR("mparse_open() fail  path: %s errno: %d", path, errno);
-        e = 1;
+        e = M2H_ERR_MPARSE_OPEN;
         goto out_exit;
     }
 
     if (fstat(fd, &st) < 0) {
         LOG_ERR("fstat(2) fail  path: %s fd: %d errno: %d", path, fd, errno);
-        e = 2;
+        e = M2H_ERR_SYSCALL_FSTAT;
         (void) close(fd);
         goto out_exit;
     }
     if (!S_ISREG(st.st_mode)) {
-        e = 3;
+        e = M2H_ERR_NOT_ISREG;
         (void) close(fd);
         LOG_ERR("path %s isn't regular file?  mode: %#x", path, st.st_mode);
         goto out_exit;
@@ -159,7 +166,7 @@ void outdata_alloc(struct curparse *curp)
 
 int do_parse(struct curparse *curp, int fd, const char *path)
 {
-    int e = 0;
+    int e = M2H_ERR_SUCCESS;
     struct roff_meta *meta;
 
     ASSERT_NONNULL(curp);
@@ -182,7 +189,7 @@ int do_parse(struct curparse *curp, int fd, const char *path)
     } else if (meta->macroset == MACROSET_MAN) {
         html_man(curp->outdata, meta);
     } else {
-        e = 4;      /* Unsupported macroset */
+        e = M2H_ERR_BAD_MACROSET;   /* Unsupported macroset */
     }
 
     return e;
