@@ -19,17 +19,10 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-#if 0
-#include "mandoc/mandoc.h"
-#include "mandoc/roff.h"
-#include "mandoc/mandoc_parse.h"
-#include "mandoc/manconf.h"
-#else
 #include "mandoc.h"
 #include "roff.h"
 #include "mandoc_parse.h"
 #include "manconf.h"
-#endif
 
 #include "mandoc2html.h"
 
@@ -73,7 +66,7 @@ static void print_meta(const struct roff_meta *);
 static int parse(const char *path);
 static int do_parse(struct curparse *curp, int, const char *);
 
-#if 0
+#ifdef BUILD_EXECUTABLE
 static void usage(void);
 
 void usage(void)
