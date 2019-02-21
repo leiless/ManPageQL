@@ -62,7 +62,6 @@ struct curparse {
 };
 
 static void outdata_alloc(struct curparse *);
-static void print_meta(const struct roff_meta *);
 static int parse(const char *path);
 static int do_parse(struct curparse *curp, int, const char *);
 
@@ -167,36 +166,8 @@ void outdata_alloc(struct curparse *curp)
     curp->outdata = html_alloc(curp->outopts);
 }
 
-int do_parse(struct curparse *curp, int fd, const char *path)
-{
-    int e = M2H_ERR_SUCCESS;
-    struct roff_meta *meta;
-
-    ASSERT_NONNULL(curp);
-    ASSERT(fd >= 0);
-    ASSERT_NONNULL(path);
-
-    mparse_readfd(curp->mp, fd, path);
-    (void) close(fd);
-
-    if (curp->outdata == NULL) outdata_alloc(curp);
-    ASSERT_NONNULL(curp->outdata);
-
-    meta = mparse_result(curp->mp);
-    ASSERT_NONNULL(meta);
-
-    print_meta(meta);
-
-    if (meta->macroset == MACROSET_MDOC) {
-        html_mdoc(curp->outdata, meta);
-    } else if (meta->macroset == MACROSET_MAN) {
-        html_man(curp->outdata, meta);
-    } else {
-        e = M2H_ERR_BAD_MACROSET;   /* Unsupported macroset */
-    }
-
-    return e;
-}
+#ifdef DEBUG
+static void print_meta(const struct roff_meta *);
 
 void print_meta(const struct roff_meta *meta)
 {
@@ -216,5 +187,39 @@ void print_meta(const struct roff_meta *meta)
         LOG("os    = \"%s\"", meta->os);
     if (meta->date != NULL)
         LOG("date  = \"%s\"", meta->date);
+}
+#endif
+
+int do_parse(struct curparse *curp, int fd, const char *path)
+{
+    int e = M2H_ERR_SUCCESS;
+    struct roff_meta *meta;
+
+    ASSERT_NONNULL(curp);
+    ASSERT(fd >= 0);
+    ASSERT_NONNULL(path);
+
+    mparse_readfd(curp->mp, fd, path);
+    (void) close(fd);
+
+    if (curp->outdata == NULL) outdata_alloc(curp);
+    ASSERT_NONNULL(curp->outdata);
+
+    meta = mparse_result(curp->mp);
+    ASSERT_NONNULL(meta);
+
+#ifdef DEBUG
+    print_meta(meta);
+#endif
+
+    if (meta->macroset == MACROSET_MDOC) {
+        html_mdoc(curp->outdata, meta);
+    } else if (meta->macroset == MACROSET_MAN) {
+        html_man(curp->outdata, meta);
+    } else {
+        e = M2H_ERR_BAD_MACROSET;   /* Unsupported macroset */
+    }
+
+    return e;
 }
 
