@@ -19,10 +19,10 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-#include "mandoc.h"
-#include "roff.h"
-#include "mandoc_parse.h"
-#include "manconf.h"
+#include "mandoc/mandoc.h"
+#include "mandoc/roff.h"
+#include "mandoc/mandoc_parse.h"
+#include "mandoc/manconf.h"
 
 #include "mandoc2html.h"
 
