@@ -1,0 +1,92 @@
+diff --git a/Makefile b/Makefile
+index 7f48296..5c2aa04 100644
+--- a/Makefile
++++ b/Makefile
+@@ -121,6 +121,7 @@ SRCS		 = att.c \
+ 		   roff_term.c \
+ 		   roff_validate.c \
+ 		   soelim.c \
++		   mandoc2html.c \
+ 		   st.c \
+ 		   tag.c \
+ 		   tbl.c \
+@@ -323,6 +324,8 @@ SOELIM_OBJS	 = soelim.o \
+ 		   compat_reallocarray.o \
+ 		   compat_stringlist.o
+ 
++MANDOC2HTML_OBJS = mandoc2html.o $(MANDOC_HTML_OBJS) out.o
++
+ WWW_MANS	 = apropos.1.html \
+ 		   demandoc.1.html \
+ 		   man.1.html \
+@@ -393,6 +396,7 @@ clean:
+ 	rm -f mandocd catman catman.o $(MANDOCD_OBJS)
+ 	rm -f demandoc $(DEMANDOC_OBJS)
+ 	rm -f soelim $(SOELIM_OBJS)
++	rm -f mandoc2html $(MANDOC2HTML_OBJS)
+ 	rm -f $(WWW_MANS) $(WWW_INCS) mandoc*.tar.gz mandoc*.sha256
+ 	rm -rf *.dSYM
+ 
+@@ -527,6 +531,9 @@ demandoc: $(DEMANDOC_OBJS) libmandoc.a
+ soelim: $(SOELIM_OBJS)
+ 	$(CC) -o $@ $(LDFLAGS) $(SOELIM_OBJS)
+ 
++mandoc2html: $(MANDOC2HTML_OBJS) libmandoc.a
++	$(CC) -o $@ $(LDFLAGS) $(MANDOC2HTML_OBJS) libmandoc.a $(LDADD)
++
+ # --- maintainer targets ---
+ 
+ www-install: www
+diff --git a/Makefile.depend b/Makefile.depend
+index c0e855c..324f80f 100644
+--- a/Makefile.depend
++++ b/Makefile.depend
+@@ -65,6 +65,7 @@ roff_html.o: roff_html.c mandoc.h roff.h out.h html.h
+ roff_term.o: roff_term.c mandoc.h roff.h out.h term.h
+ roff_validate.o: roff_validate.c mandoc.h roff.h libmandoc.h roff_int.h
+ soelim.o: soelim.c config.h compat_stringlist.h
++mandoc2html.o: mandoc2html.c mandoc2html.h
+ st.o: st.c config.h mandoc.h roff.h libmdoc.h
+ tag.o: tag.c config.h mandoc_aux.h mandoc_ohash.h compat_ohash.h tag.h
+ tbl.o: tbl.c config.h mandoc_aux.h mandoc.h tbl.h libmandoc.h tbl_parse.h tbl_int.h
+diff --git a/configure b/configure
+index 90eacc8..561c2e1 100755
+--- a/configure
++++ b/configure
+@@ -112,6 +112,8 @@ BINM_MAKEWHATIS="makewhatis"
+ BINM_MAN="man"
+ BINM_SOELIM="soelim"
+ BINM_WHATIS="whatis"
++BINM_MANDOC2HTML="mandoc2html"
++
+ MANM_MAN="man"
+ MANM_MANCONF="man.conf"
+ MANM_MDOC="mdoc"
+@@ -468,6 +470,7 @@ cat << __HEREDOC__
+ #define BINM_MAN "${BINM_MAN}"
+ #define BINM_SOELIM "${BINM_SOELIM}"
+ #define BINM_WHATIS "${BINM_WHATIS}"
++#define BINM_MANDOC2HTML "${BINM_MANDOC2HTML}"
+ 
+ __HEREDOC__
+ 
+@@ -578,6 +581,7 @@ BINM_MAKEWHATIS	= ${BINM_MAKEWHATIS}
+ BINM_MAN	= ${BINM_MAN}
+ BINM_SOELIM	= ${BINM_SOELIM}
+ BINM_WHATIS	= ${BINM_WHATIS}
++BINM_MANDOC2HTML= ${BINM_MANDOC2HTML}
+ MANM_MAN	= ${MANM_MAN}
+ MANM_MANCONF	= ${MANM_MANCONF}
+ MANM_MDOC	= ${MANM_MDOC}
+diff --git a/configure.local.example b/configure.local.example
+index 82fc2a2..88e2c24 100644
+--- a/configure.local.example
++++ b/configure.local.example
+@@ -131,6 +131,7 @@ BINM_APROPOS=mapropos		# default is "apropos"
+ BINM_WHATIS=mwhatis		# default is "whatis"
+ BINM_MAKEWHATIS=mandocdb	# default is "makewhatis"
+ BINM_SOELIM=msoelim		# default is "soelim"
++BINM_MANDOC2HTML=mandoc2html	# default is "mandoc2html"
+ 
+ # Some distributions do not want hardlinks
+ # between installed binary programs.

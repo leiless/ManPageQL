@@ -19,10 +19,17 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
+#if 0
+#include "mandoc/mandoc.h"
+#include "mandoc/roff.h"
+#include "mandoc/mandoc_parse.h"
+#include "mandoc/manconf.h"
+#else
 #include "mandoc.h"
 #include "roff.h"
 #include "mandoc_parse.h"
 #include "manconf.h"
+#endif
 
 #include "mandoc2html.h"
 
@@ -61,11 +68,13 @@ struct curparse {
     enum outt outtype;          /* which output to use */
 };
 
-static void usage(void);
 static void outdata_alloc(struct curparse *);
 static void print_meta(const struct roff_meta *);
 static int parse(const char *path);
 static int do_parse(struct curparse *curp, int, const char *);
+
+#if 0
+static void usage(void);
 
 void usage(void)
 {
@@ -79,6 +88,7 @@ int main(int argc, char *argv[])
     if (argc != 2) usage();
     return parse(argv[1]);
 }
+#endif
 
 inline int mandoc2html(const char *path)
 {
