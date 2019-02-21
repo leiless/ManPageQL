@@ -90,3 +90,18 @@ index 82fc2a2..88e2c24 100644
  
  # Some distributions do not want hardlinks
  # between installed binary programs.
+diff --git a/Makefile.local b/Makefile.local
+index e6703af..312e0af 100644
+--- a/Makefile.local
++++ b/Makefile.local
+@@ -1,8 +1,8 @@
+ BUILD_TARGETS	= 
+ INSTALL_TARGETS	= 
+ CC		= cc
+-CFLAGS		= -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter
+-LDADD		=     -lz
++CFLAGS		= -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Os
++LDADD		=     -lz -shared
+ LDFLAGS		= 
+ STATIC		= 
+ PREFIX		= /usr/local
