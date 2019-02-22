@@ -102,7 +102,7 @@ index e6703af..c88eddd 100644
 -LDADD		=     -lz
 +ARCH		= -arch i386 -arch x86_64
 +CFLAGS		= -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter $(ARCH) -Os
-+LDADD		=     -lz $(ARCH) -shared
++LDADD		=     -lz $(ARCH) -shared -install_name @executable_path/libmandoc2html.dylib
  LDFLAGS		= 
  STATIC		= 
  PREFIX		= /usr/local
