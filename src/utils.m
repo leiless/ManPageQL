@@ -48,7 +48,7 @@ static int read2buffer(const char *path, char **buffp)
     FILE *fp;
     long size;
     char *buffer;
-    long size_read;
+    long size2;
 
     CASSERT_NONNULL(path);
     CASSERT_NONNULL(buffp);
@@ -69,13 +69,13 @@ static int read2buffer(const char *path, char **buffp)
         goto out_close;
     }
 
-    size_read = fread(buffer, sizeof(char), size, fp);
+    size2 = fread(buffer, sizeof(char), size, fp);
     if (ferror(fp) == 0) {
         e = 0;
         *buffp = buffer;
-        buffer[size_read++] = '\0';
+        buffer[size2++] = '\0';
     } else {
-        LOG_ERR("fread(3) fail  read: %ld vs %ld errno: %d", size_read, size, errno);
+        LOG_ERR("fread(3) fail  read: %ld vs %ld errno: %d", size2, size, errno);
         free(buffer);
     }
 
@@ -99,6 +99,7 @@ out_exit:
  */
 int mandoc2html_buffer(const char *path, char **buffp)
 {
+    char template[] = "/tmp/.ManPageQL-XXXXXXXX-XXXXXXXX";
     char *tmp;
     int stdout_fileno;
     FILE *fp;
@@ -108,7 +109,8 @@ int mandoc2html_buffer(const char *path, char **buffp)
     CASSERT_NONNULL(buffp);
     CASSERT(*buffp == NULL);
 
-    tmp = mktemp("/tmp/.ManPageQL-XXXXXXXX-XXXXXXXX");
+    /* mktemp(3)'s template must on heap  otherwise you got bus error: 10 */
+    tmp = mktemp(template);
     if (tmp == NULL){
         LOG_ERR("mktemp(3) fail  errno: %d", errno);
         e = -1;
