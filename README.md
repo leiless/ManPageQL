@@ -32,6 +32,19 @@ Going to fix following bug:
 2019-02-23 17:28:03.211 Df QuickLookSatellite[8229:42fd1] (ManPageQL) Thumbnail file:///usr/share/man/man2/sendto.2  content size: 962
 ```
 
+### Debugging & test
+
+```
+# for macOS >= 10.13
+log stream --style compact --predicate 'process == "QuickLookSatellite" AND eventMessage CONTAINS "ManPageQL"' --color=auto
+
+# for macOS >= 10.12
+log stream --style compact --predicate 'process == "QuickLookSatellite" AND eventMessage CONTAINS "ManPageQL"'
+
+# for macOS < 10.12
+syslog -w 0 -k Sender QuickLookSatellite -k Message S ManPageQL
+```
+
 ### *References*
 
 [clang, change dependent shared library install name at link time](https://stackoverflow.com/questions/27506450/clang-change-dependent-shared-library-install-name-at-link-time)
