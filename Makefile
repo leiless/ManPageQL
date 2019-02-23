@@ -85,7 +85,7 @@ CFLAGS+=	$(SDKFLAGS) \
 		-fno-common
 
 # warnings
-CFLAGS+=	-Wall -Os
+CFLAGS+=	-Wall
 #CFLAGS+=	-Wextra
 #CFLAGS+=	-Werror
 
@@ -156,12 +156,14 @@ endif
 	touch $@
 	dsymutil $(ARCHFLAGS) -o $(PLUGIN_BUNDLE).dSYM $@/Contents/MacOS/$(PLUGIN_NAME)
 
+release: CFLAGS += -Os
 release: $(PLUGIN_BUNDLE)
 
 # see: https://www.gnu.org/software/make/manual/html_node/Target_002dspecific.html
 # Those two flags must present at the same time  o.w. debug symbol cannot be generated
 debug: CPPFLAGS += -g -DDEBUG
-debug: release
+debug: CFLAGS += -O0
+debug: $(PLUGIN_BUNDLE)
 
 install: release uninstall
 	mkdir -p "$(PREFIX)"
