@@ -52,8 +52,7 @@ void CancelThumbnailGeneration(
         QLThumbnailRequestRef thumbnail)
 {
     AUTORELEASEPOOL_BEGIN
-    uint16_t rid = ((uint64_t) thumbnail) & 0xffff;
-    LOG_DBG("Thumbnail %#x cancelled", rid);
+    LOG_DBG("Thumbnail %p cancelled", thumbnail);
     AUTORELEASEPOOL_END
 }
 

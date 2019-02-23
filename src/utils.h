@@ -4,7 +4,7 @@
 #import <Foundation/Foundation.h>
 
 #ifndef PLUGIN_NAME_S
-#define PLUGIN_NAME_S "XXX"
+#define PLUGIN_NAME_S "ManPageQL"
 #endif
 
 #define LOG(fmt, ...)       NSLog(@PLUGIN_NAME_S ": " fmt "\n", ##__VA_ARGS__)

@@ -46,8 +46,7 @@ void CancelPreviewGeneration(
         QLPreviewRequestRef preview)
 {
     AUTORELEASEPOOL_BEGIN
-    uint16_t rid = ((uint64_t) preview) & 0xffff;
-    LOG_DBG("Preview %#x cancelled", rid);
+    LOG_DBG("Preview %p cancelled", preview);
     AUTORELEASEPOOL_END
 }
 
