@@ -50,7 +50,7 @@ index c0e855c..324f80f 100644
  tag.o: tag.c config.h mandoc_aux.h mandoc_ohash.h compat_ohash.h tag.h
  tbl.o: tbl.c config.h mandoc_aux.h mandoc.h tbl.h libmandoc.h tbl_parse.h tbl_int.h
 diff --git a/configure b/configure
-index 90eacc8..561c2e1 100755
+index 90eacc8..1cb1175 100755
 --- a/configure
 +++ b/configure
 @@ -112,6 +112,8 @@ BINM_MAKEWHATIS="makewhatis"
@@ -70,7 +70,19 @@ index 90eacc8..561c2e1 100755
  
  __HEREDOC__
  
-@@ -578,6 +581,7 @@ BINM_MAKEWHATIS	= ${BINM_MAKEWHATIS}
+@@ -558,8 +561,9 @@ cat << __HEREDOC__
+ BUILD_TARGETS	= ${BUILD_TARGETS}
+ INSTALL_TARGETS	= ${INSTALL_TARGETS}
+ CC		= ${CC}
+-CFLAGS		= ${CFLAGS}
+-LDADD		= ${LDADD}
++ARCH		= -arch i386 -arch x86_64
++CFLAGS		= ${CFLAGS} \$(ARCH) -Os
++LDADD		= ${LDADD} -shared -install_name @executable_path/libmandoc2html.dylib
+ LDFLAGS		= ${LDFLAGS}
+ STATIC		= ${STATIC}
+ PREFIX		= ${PREFIX}
+@@ -578,6 +582,7 @@ BINM_MAKEWHATIS	= ${BINM_MAKEWHATIS}
  BINM_MAN	= ${BINM_MAN}
  BINM_SOELIM	= ${BINM_SOELIM}
  BINM_WHATIS	= ${BINM_WHATIS}
@@ -90,19 +102,3 @@ index 82fc2a2..88e2c24 100644
  
  # Some distributions do not want hardlinks
  # between installed binary programs.
-diff --git a/Makefile.local b/Makefile.local
-index e6703af..c88eddd 100644
---- a/Makefile.local
-+++ b/Makefile.local
-@@ -1,8 +1,9 @@
- BUILD_TARGETS	= 
- INSTALL_TARGETS	= 
- CC		= cc
--CFLAGS		= -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter
--LDADD		=     -lz
-+ARCH		= -arch i386 -arch x86_64
-+CFLAGS		= -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter $(ARCH) -Os
-+LDADD		=     -lz $(ARCH) -shared -install_name @executable_path/libmandoc2html.dylib
- LDFLAGS		= 
- STATIC		= 
- PREFIX		= /usr/local
