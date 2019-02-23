@@ -103,7 +103,7 @@ out_exit:
  */
 int mandoc2html_buffer(const char *path, char **buffp, size_t *sizep)
 {
-    char template[] = "/tmp/.ManPageQL-XXXXXXXX-XXXXXXXX";
+    char template[] = "/tmp/.ManPageQL-XXXXXXXXXXXX";
     char *tmp;
     int stdout_fileno;
     FILE *fp;

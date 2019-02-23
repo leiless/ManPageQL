@@ -69,7 +69,7 @@ OSStatus GenerateThumbnailForURL(
     e = mandoc2html_buffer(path, &buffer, &size);
     CFRelease(cfpath);      /* XXX: Do NOT use cfpath & path any more */
     if (e != 0) {
-        LOG_ERR("mandoc2html_buffer() fail  url: %@ err: %d", url, e);
+        LOG_ERR("mandoc2html_buffer() fail  url: %@ err: %d", url, (int) e);
         e = kGeneralFailureErr;
         goto out_exit;
     }
