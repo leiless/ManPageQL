@@ -26,7 +26,7 @@
 
 #define CF_SAFE_RELEASE(ref)    if (ref) CFRelease(ref)
 
-int mandoc2html_buffer(const char *, char **);
+int mandoc2html_buffer(const char *, char **, size_t *);
 
 #endif	/* UTILS_H */
 
