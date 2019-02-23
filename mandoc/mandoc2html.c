@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 }
 #endif
 
-inline int mandoc2html(const char *path)
+int mandoc2html(const char *path)
 {
     return parse(path);
 }
