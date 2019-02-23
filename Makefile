@@ -33,7 +33,7 @@ PLUGIN_BID?=		$(BUNDLE_DOMAIN).quicklook.$(PLUGIN_NAME)
 PLUGIN_BUNDLE?=		$(PLUGIN_NAME).qlgenerator
 PLUGIN_MACHO?=		$(PLUGIN_NAME)
 ARCHFLAGS?=		-arch x86_64 -arch i386
-PREFIX?=		/Library/QuickLook
+PREFIX?=		${HOME}/Library/QuickLook
 
 #
 # Set default macOS SDK

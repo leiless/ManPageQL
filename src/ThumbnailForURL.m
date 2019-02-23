@@ -22,7 +22,7 @@ OSStatus GenerateThumbnailForURL(
 
     /* Alternatively [NSDictionary dictionary] */
     NSDictionary *previewProperties = nil;
-    NSString *badge = [@"example" uppercaseString];
+    NSString *badge = [NSString stringWithFormat:@".%@", CFURLCopyPathExtension(url)];
     NSDictionary *properties = @{
         (NSString *) kQLThumbnailPropertyExtensionKey : badge
     };
