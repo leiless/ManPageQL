@@ -2,12 +2,12 @@
  * Created 190223 lynnl
  *
  * Compile:
- *  gcc -Wall -Wextra -L. -lmandoc2html driver.c -o driver
+ *  gcc -Wall -Wextra driver.c -L. -lmandoc2html
  */
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "mandoc2html.c"
+#include "mandoc2html.h"
 
 void usage(void)
 {

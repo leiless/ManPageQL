@@ -50,7 +50,7 @@ index c0e855c..324f80f 100644
  tag.o: tag.c config.h mandoc_aux.h mandoc_ohash.h compat_ohash.h tag.h
  tbl.o: tbl.c config.h mandoc_aux.h mandoc.h tbl.h libmandoc.h tbl_parse.h tbl_int.h
 diff --git a/configure b/configure
-index 90eacc8..0de3da2 100755
+index 90eacc8..17d2faa 100755
 --- a/configure
 +++ b/configure
 @@ -112,6 +112,8 @@ BINM_MAKEWHATIS="makewhatis"
@@ -70,7 +70,7 @@ index 90eacc8..0de3da2 100755
  
  __HEREDOC__
  
-@@ -558,8 +561,9 @@ cat << __HEREDOC__
+@@ -558,8 +561,11 @@ cat << __HEREDOC__
  BUILD_TARGETS	= ${BUILD_TARGETS}
  INSTALL_TARGETS	= ${INSTALL_TARGETS}
  CC		= ${CC}
@@ -78,11 +78,13 @@ index 90eacc8..0de3da2 100755
 -LDADD		= ${LDADD}
 +ARCH		= -arch i386 -arch x86_64
 +CFLAGS		= ${CFLAGS} \$(ARCH) -Os
-+LDADD		= ${LDADD} \$(ARCH) -shared -install_name @executable_path/libmandoc2html.dylib
++DYLIB_VERSION	= -compatibility_version 1.0.0 -current_version \$(VERSION)
++DYLIB_LINK	= -dynamiclib -install_name @executable_path/libmandoc2html.dylib
++LDADD		= ${LDADD} \$(ARCH) \$(DYLIB_LINK) \$(DYLIB_VERSION)
  LDFLAGS		= ${LDFLAGS}
  STATIC		= ${STATIC}
  PREFIX		= ${PREFIX}
-@@ -578,6 +582,7 @@ BINM_MAKEWHATIS	= ${BINM_MAKEWHATIS}
+@@ -578,6 +584,7 @@ BINM_MAKEWHATIS	= ${BINM_MAKEWHATIS}
  BINM_MAN	= ${BINM_MAN}
  BINM_SOELIM	= ${BINM_SOELIM}
  BINM_WHATIS	= ${BINM_WHATIS}
