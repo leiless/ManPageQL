@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
         LOG_ERR("mandoc2html_buffer() fail  error: %d", e);
     } else {
         assert_nonnull(buffer);
-        LOG("HTML OUTPUT>\n\n%s", buffer);
+        LOG("%s", buffer);
     }
 
     return e;
