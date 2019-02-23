@@ -50,7 +50,7 @@ index c0e855c..324f80f 100644
  tag.o: tag.c config.h mandoc_aux.h mandoc_ohash.h compat_ohash.h tag.h
  tbl.o: tbl.c config.h mandoc_aux.h mandoc.h tbl.h libmandoc.h tbl_parse.h tbl_int.h
 diff --git a/configure b/configure
-index 90eacc8..1cb1175 100755
+index 90eacc8..0de3da2 100755
 --- a/configure
 +++ b/configure
 @@ -112,6 +112,8 @@ BINM_MAKEWHATIS="makewhatis"
@@ -78,7 +78,7 @@ index 90eacc8..1cb1175 100755
 -LDADD		= ${LDADD}
 +ARCH		= -arch i386 -arch x86_64
 +CFLAGS		= ${CFLAGS} \$(ARCH) -Os
-+LDADD		= ${LDADD} -shared -install_name @executable_path/libmandoc2html.dylib
++LDADD		= ${LDADD} \$(ARCH) -shared -install_name @executable_path/libmandoc2html.dylib
  LDFLAGS		= ${LDFLAGS}
  STATIC		= ${STATIC}
  PREFIX		= ${PREFIX}
