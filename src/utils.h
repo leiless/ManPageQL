@@ -24,6 +24,8 @@
 #define AUTORELEASEPOOL_BEGIN   @autoreleasepool {
 #define AUTORELEASEPOOL_END     }
 
+#define CF_SAFE_RELEASE(ref)    if (ref) CFRelease(ref)
+
 int mandoc2html_buffer(const char *, char **);
 
 #endif	/* UTILS_H */

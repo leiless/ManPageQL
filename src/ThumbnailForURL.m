@@ -32,7 +32,9 @@ OSStatus GenerateThumbnailForURL(
 
     if (QLThumbnailRequestIsCancelled(thumbnail)) goto out_exit;
 
-    LOG(@"%s() called", __func__);
+    CFStringRef path = CFURLCopyPath(url);
+    LOG(@"%s() called  path: %@", __func__, path);
+    CF_SAFE_RELEASE(path);
 
     QLThumbnailRequestSetThumbnailWithURLRepresentation(
         thumbnail,

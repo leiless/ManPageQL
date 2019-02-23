@@ -148,6 +148,8 @@ ifdef COPYRIGHT
 	/usr/libexec/PlistBuddy -c 'Add :NSHumanReadableCopyright string "$(COPYRIGHT)"' $@/Contents/Info.plist
 endif
 
+	cp mandoc/libmandoc2html.dylib $@/Contents/MacOS
+
 ifdef SIGNCERT
 	$(CODESIGN) --force --timestamp=none --sign $(SIGNCERT) $@
 	/usr/libexec/PlistBuddy -c 'Add :CFBundleSignature string ????' $@/Contents/Info.plist
