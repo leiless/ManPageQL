@@ -2,7 +2,7 @@
  * Created 190223 lynnl
  *
  * Compile:
- *  gcc -Wall -Wextra driver.c -L. -lmandoc2html
+ *  gcc -Wall -Wextra -L. -lmandoc2html driver.c -o driver.out
  */
 
 #include <stdio.h>
@@ -66,7 +66,7 @@ static int read2buffer(const char *path, char **buffp)
     FILE *fp;
     long size;
     char *buffer;
-    long size_read;
+    long size2;
 
     assert_nonnull(path);
     assert_nonnull(buffp);
@@ -87,13 +87,13 @@ static int read2buffer(const char *path, char **buffp)
         goto out_close;
     }
 
-    size_read = fread(buffer, sizeof(char), size, fp);
+    size2 = fread(buffer, sizeof(char), size, fp);
     if (ferror(fp) == 0) {
         e = 0;
         *buffp = buffer;
-        buffer[size_read++] = '\0';
+        buffer[size2++] = '\0';
     } else {
-        LOG_ERR("fread(3) fail  read: %ld vs %ld errno: %d", size_read, size, errno);
+        LOG_ERR("fread(3) fail  read: %ld vs %ld errno: %d", size2, size, errno);
         free(buffer);
     }
 
@@ -199,6 +199,7 @@ int main(int argc, char *argv[])
 
     return e;
 #else
+    if (argc != 2) usage();
     return mandoc2html(argv[1]);
 #endif
 }
