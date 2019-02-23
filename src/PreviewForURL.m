@@ -2,10 +2,13 @@
  * Created 190219 lynnl
  */
 #import <Foundation/Foundation.h>
+
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreServices/CoreServices.h>
 #include <QuickLook/QuickLook.h>
+
 #include "utils.h"
+#include "mandoc2html.h"
 
 /*
  * Generate a preview for designated file
