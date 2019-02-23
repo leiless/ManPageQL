@@ -117,6 +117,7 @@ out_exit:
  */
 int mandoc2html_buffer(const char *path, char **buffp)
 {
+    char template[] = "/tmp/.ManPageQL-XXXXXXXX-XXXXXXXX";
     char *tmp;
     int stdout_fileno;
     FILE *fp;
@@ -126,7 +127,8 @@ int mandoc2html_buffer(const char *path, char **buffp)
     assert_nonnull(buffp);
     assert(*buffp == NULL);
 
-    tmp = mktemp("/tmp/.ManPageQL-XXXXXXXX-XXXXXXXX");
+    /* mktemp(3)'s template must on heap  otherwise you got bus error: 10 */
+    tmp = mktemp(template);
     if (tmp == NULL){
         LOG_ERR("mktemp(3) fail  errno: %d", errno);
         e = -1;
