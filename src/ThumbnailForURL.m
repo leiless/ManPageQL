@@ -54,11 +54,13 @@ OSStatus GenerateThumbnailForURL(
     cfpath = CFURLCopyPath(url);
     if (cfpath == NULL) {
         e = paramErr;
+        LOG_ERR("CFURLCopyPath() fail  url: %@", url);
         goto out_exit;
     }
 
     path = CFStringGetCStringPtr(cfpath, kCFStringEncodingUTF8);
     if (path == NULL) {
+        LOG_ERR("CFStringGetCStringPtr() fail  path: %@", cfpath);
         CFRelease(cfpath);
         e = paramErr;
         goto out_exit;
@@ -67,6 +69,7 @@ OSStatus GenerateThumbnailForURL(
     e = mandoc2html_buffer(path, &buffer, &size);
     CFRelease(cfpath);      /* XXX: Do NOT use cfpath & path any more */
     if (e != 0) {
+        LOG_ERR("mandoc2html_buffer() fail  url: %@ err: %d", url, e);
         e = kGeneralFailureErr;
         goto out_exit;
     }
@@ -74,6 +77,7 @@ OSStatus GenerateThumbnailForURL(
     cfdata = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, (UInt8 *) buffer, size, kCFAllocatorNull);
     if (cfdata == NULL) {
         e = kGeneralFailureErr;
+        LOG_ERR("CFDataCreateWithBytesNoCopy() fail  url: %@", url);
         goto out_buffer;
     }
 
@@ -84,6 +88,8 @@ OSStatus GenerateThumbnailForURL(
         (__bridge CFDictionaryRef) previewProperties,
         (__bridge CFDictionaryRef) properties
     );
+
+    LOG("Thumbnail %@  content size: %zu", url, size);
 
     CFRelease(cfdata);
 out_buffer:
