@@ -67,17 +67,16 @@ OSStatus GenerateThumbnailForURL(
     }
 
     e = mandoc2html_buffer(path, &buffer, &size);
-    CFRelease(cfpath);      /* XXX: Do NOT use cfpath & path any more */
     if (e != 0) {
-        LOG_ERR("mandoc2html_buffer() fail  url: %@ err: %d", url, (int) e);
+        LOG_ERR("mandoc2html_buffer() fail  path: %s err: %d", path, (int) e);
         e = kGeneralFailureErr;
-        goto out_exit;
+        goto out_cfpath;
     }
 
     cfdata = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, (UInt8 *) buffer, size, kCFAllocatorNull);
     if (cfdata == NULL) {
         e = kGeneralFailureErr;
-        LOG_ERR("CFDataCreateWithBytesNoCopy() fail  url: %@", url);
+        LOG_ERR("CFDataCreateWithBytesNoCopy() fail  path: %s", path);
         goto out_buffer;
     }
 
@@ -89,11 +88,13 @@ OSStatus GenerateThumbnailForURL(
         (__bridge CFDictionaryRef) properties
     );
 
-    LOG("Thumbnail %@  content size: %zu", url, size);
+    LOG("Thumbnail %s  content size: %zu", path, size);
 
     CFRelease(cfdata);
 out_buffer:
     free(buffer);
+out_cfpath:
+    CFRelease(cfpath);      /* XXX: cfpath & path both invalidated */
 out_exit:
     return e;
     AUTORELEASEPOOL_END
