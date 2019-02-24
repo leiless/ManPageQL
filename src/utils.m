@@ -105,8 +105,9 @@ int mandoc2html_buffer(const char *path, char **buffp, size_t *sizep)
 {
     char template[] = "/tmp/.ManPageQL-XXXXXXXXXXXX";
     char *tmp;
-    int stdout_fileno;
+    int fd;
     FILE *fp;
+    fpos_t pos;
     int e;
 
     CASSERT_NONNULL(path);
@@ -122,41 +123,57 @@ int mandoc2html_buffer(const char *path, char **buffp, size_t *sizep)
         goto out_exit;
     }
 
-    stdout_fileno = dup(fileno(stdout));
-    if (stdout_fileno == -1) {
-        LOG_ERR("dup(2) fail  errno: %d", errno);
+    (void) fflush(stdout);
+    if (fgetpos(stdout, &pos) != 0) {
+        LOG_ERR("fgetpos(3) fail  errno: %d", errno);
         e = -2;
+        goto out_exit;
+    }
+
+out_dup:
+    fd = dup(fileno(stdout));
+    if (fd == -1) {
+        if (errno == EINTR) goto out_dup;
+        LOG_ERR("dup(2) fail  errno: %d", errno);
+        e = -3;
         goto out_exit;
     }
 
     fp = freopen(tmp, "w", stdout);
     if (fp == NULL) {
         LOG_ERR("freopen(3) fail  path: %s errno: %d", tmp, errno);
-        e = -3;
-        (void) close(stdout_fileno);    /* Close just duped stdout */
-        goto out_exit;
+        e = -4;
+        goto out_close;
     }
 
     e = mandoc2html(path);
 
     /* Restore stdout ASAP */
-    (void) fclose(stdout);
-    stdout = fdopen(stdout_fileno, "w");
-    if (stdout == NULL) {
-        LOG_ERR("fdopen(3) fail, stdout goes haywire  fd: %d errno: %d", stdout_fileno, errno);
-        (void) close(stdout_fileno);    /* Prevent rsrcleak */
-        stdout = stderr;                /* Bad luck: fallback */
+    (void) fflush(stdout);
+out_dup2:
+    if (dup2(fd, fileno(stdout)) != 0) {
+        if (errno == EINTR) goto out_dup2;
+        LOG_ERR("dup2(2) fail  %d -> %d errno: %d", fd, fileno(stdout), errno);
+        /* Should never happen  stdout goes haywire */
+    } else {
+        clearerr(stdout);
+        if (fsetpos(stdout, &pos) != 0) {
+            LOG_ERR("fsetpos(3) fail  pos: %lld errno: %d", pos, errno);
+            /* No fallback  stdout position goes haywire */
+        }
     }
 
     if (e == M2H_ERR_SUCCESS) {
         if ((e = read2buffer(tmp, buffp, sizep)) != 0) {
-            e = -4;  /* Reassign an error code */
+            e = -5;  /* Reassign an error code */
         }
     }
 
     /* see: https://www.gnu.org/software/libc/manual/html_node/Deleting-Files.html */
     if (unlink(tmp) != 0) LOG_ERR("unlink(2) fail  path: %s errno: %d", tmp, errno);
 
+out_close:
+    (void) close(fd);
 out_exit:
     return e;
 }
