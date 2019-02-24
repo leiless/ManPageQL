@@ -45,10 +45,10 @@ OSStatus GeneratePreviewForURL(
     size_t size;
     CFDataRef cfdata;
 
-    cfpath = CFURLCopyPath(url);
+    cfpath = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
     if (cfpath == NULL) {
         e = paramErr;
-        LOG_ERR("CFURLCopyPath() fail  url: %@", url);
+        LOG_ERR("CFURLCopyFileSystemPath() fail  url: %@", url);
         goto out_exit;
     }
 
