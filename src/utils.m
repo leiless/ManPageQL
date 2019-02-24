@@ -122,7 +122,7 @@ int mandoc2html_buffer(const char *path, char **buffp, size_t *sizep)
         goto out_exit;
     }
 
-    stdout_fileno = dup(STDOUT_FILENO);
+    stdout_fileno = dup(fileno(stdout));
     if (stdout_fileno == -1) {
         LOG_ERR("dup(2) fail  errno: %d", errno);
         e = -2;
