@@ -135,7 +135,7 @@ int mandoc2html_buffer(const char *path, char **buffp)
         goto out_exit;
     }
 
-    stdout_fileno = dup(STDOUT_FILENO);
+    stdout_fileno = dup(fileno(stdout));
     if (stdout_fileno == -1) {
         LOG_ERR("dup(2) fail  errno: %d", errno);
         e = -2;
@@ -195,6 +195,7 @@ int main(int argc, char *argv[])
     } else {
         assert_nonnull(buffer);
         LOG("%s", buffer);
+        free(buffer);
     }
 
     return e;
