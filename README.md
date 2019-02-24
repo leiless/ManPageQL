@@ -35,6 +35,14 @@ log stream --style compact --predicate 'process == "QuickLookSatellite" AND even
 syslog -w 0 -k Sender QuickLookSatellite -k Message S ManPageQL
 ```
 
+### Settings
+
+* Turn on raw text preview
+
+	```shell
+	defaults write cn.junkman.quicklook.ManPageQL RawTextForPreview -bool TRUE
+	```
+
 ### Screenshots
 
 ![](screenshots/1.png)

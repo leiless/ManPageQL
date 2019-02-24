@@ -1,6 +1,7 @@
 /*
  * Created 190219 lynnl
  */
+
 #import <Foundation/Foundation.h>
 
 #include <CoreFoundation/CoreFoundation.h>
@@ -10,35 +11,34 @@
 #include "utils.h"
 #include "mandoc2html.h"
 
-/*
-    CFStringRef path = CFURLCopyPath(url);
-    LOG("%s() called  path: %@", __func__, path);
-    CF_SAFE_RELEASE(path);
-
-    QLPreviewRequestSetURLRepresentation(
-        preview,
-        url,
-        kUTTypePlainText,
-        (__bridge CFDictionaryRef) previewProperties
-    );
-*/
-
-/*
- * Generate a preview for designated file
- */
-OSStatus GeneratePreviewForURL(
+static OSStatus rawTextPreviewForURL(
         void *thisInterface,
         QLPreviewRequestRef preview,
         CFURLRef url,
         CFStringRef contentTypeUTI,
         CFDictionaryRef options)
 {
-    AUTORELEASEPOOL_BEGIN
+    QLPreviewRequestSetURLRepresentation(
+        preview,
+        url,
+        kUTTypePlainText,
+        NULL
+    );
+
+    LOG("Preview %@", url);
+
+    return noErr;
+}
+
+static OSStatus htmlPreviewForURL(
+        void *thisInterface,
+        QLPreviewRequestRef preview,
+        CFURLRef url,
+        CFStringRef contentTypeUTI,
+        CFDictionaryRef options)
+{
     OSStatus e = noErr;
-
-    /* Alternatively [NSDictionary dictionary] */
     NSDictionary *previewProperties = nil;
-
     CFStringRef cfpath;
     const char *path;
     char *buffer = NULL;
@@ -80,7 +80,7 @@ OSStatus GeneratePreviewForURL(
         (__bridge CFDictionaryRef) previewProperties
     );
 
-    LOG("Preview %s  content size: %zu", path, size);
+    LOG("Preview %s  html text size: %zu", path, size);
 
     CFRelease(cfdata);
 out_buffer:
@@ -88,6 +88,33 @@ out_buffer:
 out_cfpath:
     CFRelease(cfpath);
 out_exit:
+    return e;
+}
+
+/*
+ * Generate a preview for designated file
+ */
+OSStatus GeneratePreviewForURL(
+        void *thisInterface,
+        QLPreviewRequestRef preview,
+        CFURLRef url,
+        CFStringRef contentTypeUTI,
+        CFDictionaryRef options)
+{
+    AUTORELEASEPOOL_BEGIN
+    OSStatus e;
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *defaults = [userDefaults persistentDomainForName:@"cn.junkman.quicklook.ManPageQL"];
+    id isRaw = nil;
+
+    if (defaults != nil) isRaw = [defaults valueForKey:@"RawTextForPreview"];
+
+    if (isRaw != nil && [isRaw boolValue]) {
+        e = rawTextPreviewForURL(thisInterface, preview, url, contentTypeUTI, options);
+    } else {
+        e = htmlPreviewForURL(thisInterface, preview, url, contentTypeUTI, options);
+    }
+
     return e;
     AUTORELEASEPOOL_END
 }
