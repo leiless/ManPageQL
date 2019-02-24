@@ -25,7 +25,7 @@ static OSStatus rawTextPreviewForURL(
         NULL
     );
 
-    LOG("Preview %@", url);
+    LOG("Preview %@  UTI: %@ options: %@", url, contentTypeUTI, options);
 
     return noErr;
 }
@@ -80,7 +80,8 @@ static OSStatus htmlPreviewForURL(
         (__bridge CFDictionaryRef) previewProperties
     );
 
-    LOG("Preview %s  html text size: %zu", path, size);
+    LOG("Preview %s  size: %zu UTI: %@ options: %@",
+            path, size, contentTypeUTI, options);
 
     CFRelease(cfdata);
 out_buffer:
@@ -127,7 +128,7 @@ void CancelPreviewGeneration(
         QLPreviewRequestRef preview)
 {
     AUTORELEASEPOOL_BEGIN
-    LOG_DBG("Preview %p cancelled", preview);
+    LOG_DBG("Preview %p cancelled  interface: %p", preview, thisInterface);
     AUTORELEASEPOOL_END
 }
 

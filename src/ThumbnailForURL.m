@@ -36,7 +36,9 @@ static OSStatus rawTextThumbnailForURL(
         (__bridge CFDictionaryRef) properties
     );
 
-    LOG("Thumbnail %@", url);
+    LOG("Thumbnail %@  UTI: %@ size: %@ options: %@",
+            url, contentTypeUTI,
+            NSStringFromSize(NSSizeFromCGSize(maxSize)), options);
 
     return noErr;
 }
@@ -100,7 +102,9 @@ static OSStatus htmlThumbnailForURL(
         (__bridge CFDictionaryRef) properties
     );
 
-    LOG("Thumbnail %s  html text size: %zu", path, size);
+    LOG("Thumbnail %s  length: %zu UTI: %@ size: %@ options: %@",
+            path, size, contentTypeUTI,
+            NSStringFromSize(NSSizeFromCGSize(maxSize)), options);
 
     CFRelease(cfdata);
 out_buffer:
@@ -148,7 +152,7 @@ void CancelThumbnailGeneration(
         QLThumbnailRequestRef thumbnail)
 {
     AUTORELEASEPOOL_BEGIN
-    LOG_DBG("Thumbnail %p cancelled", thumbnail);
+    LOG_DBG("Thumbnail %p cancelled  interface: %p", thumbnail, thisInterface);
     AUTORELEASEPOOL_END
 }
 
