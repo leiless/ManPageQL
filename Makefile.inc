@@ -3,7 +3,7 @@
 #
 
 PLUGIN_NAME=ManPageQL
-PLUGIN_VERSION=0000.00.04
+PLUGIN_VERSION=0000.00.06
 PLUGIN_BUILD:=$(shell ./bump_build.sh)
 BUNDLE_DOMAIN=cn.junkman
 #
