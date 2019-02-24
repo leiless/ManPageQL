@@ -61,9 +61,8 @@ OSStatus GenerateThumbnailForURL(
     path = CFStringGetCStringPtr(cfpath, kCFStringEncodingUTF8);
     if (path == NULL) {
         LOG_ERR("CFStringGetCStringPtr() fail  path: %@", cfpath);
-        CFRelease(cfpath);
         e = paramErr;
-        goto out_exit;
+        goto out_cfpath;
     }
 
     e = mandoc2html_buffer(path, &buffer, &size);
