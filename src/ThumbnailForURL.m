@@ -1,6 +1,7 @@
 /*
  * Created 190219 lynnl
  */
+
 #import <Foundation/Foundation.h>
 
 #include <CoreFoundation/CoreFoundation.h>
@@ -10,10 +11,22 @@
 #include "utils.h"
 #include "mandoc2html.h"
 
-/*
-    CFStringRef path = CFURLCopyPath(url);
-    LOG(@"%s() called  path: %@", __func__, path);
-    CF_SAFE_RELEASE(path);
+static OSStatus rawTextThumbnailForURL(
+        void *thisInterface,
+        QLThumbnailRequestRef thumbnail,
+        CFURLRef url,
+        CFStringRef contentTypeUTI,
+        CFDictionaryRef options,
+        CGSize maxSize)
+{
+    NSDictionary *previewProperties = nil;
+    CFStringRef ext = CFURLCopyPathExtension(url);
+    NSString *badge = [NSString stringWithFormat:@".%@", ext ? ext : CFSTR("")];
+    NSDictionary *properties = @{
+        (__bridge NSString *) kQLThumbnailPropertyExtensionKey : badge
+    };
+
+    CF_SAFE_RELEASE(ext);
 
     QLThumbnailRequestSetThumbnailWithURLRepresentation(
         thumbnail,
@@ -22,12 +35,13 @@
         (__bridge CFDictionaryRef) previewProperties,
         (__bridge CFDictionaryRef) properties
     );
-*/
 
-/*
- * Generate a thumbnail for designated file as fast as possible
- */
-OSStatus GenerateThumbnailForURL(
+    LOG("Thumbnail %@", url);
+
+    return noErr;
+}
+
+static OSStatus htmlThumbnailForURL(
         void *thisInterface,
         QLThumbnailRequestRef thumbnail,
         CFURLRef url,
@@ -35,21 +49,20 @@ OSStatus GenerateThumbnailForURL(
         CFDictionaryRef options,
         CGSize maxSize)
 {
-    AUTORELEASEPOOL_BEGIN
     OSStatus e = noErr;
-
-    /* Alternatively [NSDictionary dictionary] */
     NSDictionary *previewProperties = nil;
-    NSString *badge = [NSString stringWithFormat:@".%@", CFURLCopyPathExtension(url)];
+    CFStringRef ext = CFURLCopyPathExtension(url);
+    NSString *badge = [NSString stringWithFormat:@".%@", ext ? ext : CFSTR("")];
     NSDictionary *properties = @{
-        (NSString *) kQLThumbnailPropertyExtensionKey : badge
+        (__bridge NSString *) kQLThumbnailPropertyExtensionKey : badge
     };
-
     CFStringRef cfpath;
     const char *path;
     char *buffer = NULL;
     size_t size;
     CFDataRef cfdata;
+
+    CF_SAFE_RELEASE(ext);
 
     cfpath = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
     if (cfpath == NULL) {
@@ -87,7 +100,7 @@ OSStatus GenerateThumbnailForURL(
         (__bridge CFDictionaryRef) properties
     );
 
-    LOG("Thumbnail %s  content size: %zu", path, size);
+    LOG("Thumbnail %s  html text size: %zu", path, size);
 
     CFRelease(cfdata);
 out_buffer:
@@ -95,6 +108,34 @@ out_buffer:
 out_cfpath:
     CFRelease(cfpath);      /* XXX: cfpath & path both invalidated */
 out_exit:
+    return e;
+}
+
+/*
+ * Generate a thumbnail for designated file as fast as possible
+ */
+OSStatus GenerateThumbnailForURL(
+        void *thisInterface,
+        QLThumbnailRequestRef thumbnail,
+        CFURLRef url,
+        CFStringRef contentTypeUTI,
+        CFDictionaryRef options,
+        CGSize maxSize)
+{
+    AUTORELEASEPOOL_BEGIN
+    OSStatus e;
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *defaults = [userDefaults persistentDomainForName:@"cn.junkman.quicklook.ManPageQL"];
+    id isRaw = nil;
+
+    if (defaults != nil) isRaw = [defaults valueForKey:@"RawTextForThumbnail"];
+
+    if (isRaw != nil && [isRaw boolValue]) {
+        e = rawTextThumbnailForURL(thisInterface, thumbnail, url, contentTypeUTI, options, maxSize);
+    } else {
+        e = htmlThumbnailForURL(thisInterface, thumbnail, url, contentTypeUTI, options, maxSize);
+    }
+
     return e;
     AUTORELEASEPOOL_END
 }

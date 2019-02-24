@@ -20,6 +20,9 @@ make uninstall
 # Install/uninstall Quick Look plugin for all users
 PREFIX=/Library/QuickLook sudo make install
 PREFIX=/Library/QuickLook sudo make uninstall
+
+# Remove all settings
+defaults delete cn.junkman.quicklook.ManPageQL
 ```
 
 ### Debugging & test
@@ -37,10 +40,22 @@ syslog -w 0 -k Sender QuickLookSatellite -k Message S ManPageQL
 
 ### Settings
 
+* Read current settings
+
+	```shell
+defaults read cn.junkman.quicklook.ManPageQL
+	```
+
 * Turn on raw text preview
 
 	```shell
-	defaults write cn.junkman.quicklook.ManPageQL RawTextForPreview -bool TRUE
+defaults write cn.junkman.quicklook.ManPageQL RawTextForPreview -bool TRUE
+	```
+
+* Turn on raw text thumbnail
+
+	```shell
+defaults write cn.junkman.quicklook.ManPageQL RawTextForThumbnail -bool TRUE
 	```
 
 ### Screenshots
@@ -93,7 +108,7 @@ libmandoc2html.dylib:
 ### TODO
 
 * Add user-configurable options
- * Allow user to use raw text thumbnail/preview
+ * [**DONE**] Allow user to use raw text thumbnail/preview
  * Allow user to specify preview width/height
  * ...
 
