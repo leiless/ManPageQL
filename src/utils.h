@@ -7,12 +7,14 @@
 #define PLUGIN_NAME_S "ManPageQL"
 #endif
 
+#define UNUSED(arg0, ...)   (void) ((void) arg0, ##__VA_ARGS__)
+
 #define LOG(fmt, ...)       NSLog(@PLUGIN_NAME_S ": " fmt "\n", ##__VA_ARGS__)
 #define LOG_ERR(fmt, ...)   LOG("[ERR] " fmt, ##__VA_ARGS__)
 #ifdef DEBUG
 #define LOG_DBG(fmt, ...)   LOG("[DBG] " fmt, ##__VA_ARGS__)
 #else
-#define LOG_DBG(fmt, ...)   (void) (0, ##__VA_ARGS__)
+#define LOG_DBG(fmt, ...)   UNUSED(fmt, ##__VA_ARGS__)
 #endif
 
 #define CASSERT(e)          NSCAssert(e, @#e)
