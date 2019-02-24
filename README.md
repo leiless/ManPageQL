@@ -13,7 +13,7 @@ This project is managed by `Makefile` and `Makefile.inc`, thus you can simply ru
 ### Install & uninstall
 
 ```shell
-# Install/ninstall Quick Look plugin for current user
+# Install/uninstall Quick Look plugin for current user
 make install
 make uninstall
 
@@ -47,7 +47,7 @@ syslog -w 0 -k Sender QuickLookSatellite -k Message S ManPageQL
 
 `libmandoc2html` use [mandoc](https://mandoc.bsd.lv/) as its core functionalities, it's merely a wrapper of [mandoc](https://mandoc.bsd.lv/), which this Quick Look plugin is link against it.
 
-HOWTO compile `libmandoc2html.dylib` from latest `mandoc` source
+HOWTO compile `libmandoc2html.dylib` from latest [mandoc](https://mandoc.bsd.lv/) source
 
 ```shell
 # Clone mandoc CVS repository
