@@ -43,19 +43,19 @@ syslog -w 0 -k Sender QuickLookSatellite -k Message S ManPageQL
 * Read current settings
 
 	```shell
-defaults read cn.junkman.quicklook.ManPageQL
+	defaults read cn.junkman.quicklook.ManPageQL
 	```
 
 * Turn on raw text preview
 
 	```shell
-defaults write cn.junkman.quicklook.ManPageQL RawTextForPreview -bool TRUE
+	defaults write cn.junkman.quicklook.ManPageQL RawTextForPreview -bool TRUE
 	```
 
 * Turn on raw text thumbnail
 
 	```shell
-defaults write cn.junkman.quicklook.ManPageQL RawTextForThumbnail -bool TRUE
+	defaults write cn.junkman.quicklook.ManPageQL RawTextForThumbnail -bool TRUE
 	```
 
 ### Screenshots
