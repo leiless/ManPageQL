@@ -8,11 +8,11 @@ Current only support limited man page extensions: `.1`, `.2`, `.3`, `.4`, `.5`, 
 
 ### Compile
 
+This repository uses [Git-LFS](https://git-lfs.github.com/) to track `dylib`, make sure `dylib` files are fetched to local before `make`.
+
 This project is managed by `Makefile` and `Makefile.inc`, thus you can simply run `make` in terminal for a debug build, append `release` for a release build.
 
 ### Install & uninstall
-
-This repository uses [Git-LFS](https://git-lfs.github.com/) to track `dylib`, make sure `dylib` files are fetched to local before `make`.
 
 ```shell
 # Install/uninstall Quick Look plugin for current user
@@ -128,6 +128,8 @@ libmandoc2html.dylib:
 * Support universal man page file detection, instead of known extensions like `.1`, `.2`, ...
 
 	Hint: use `file --brief --mime-type FILE` for detection?
+
+* Support man page symlink thumbnail/preview
 
 <br>
 
