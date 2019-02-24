@@ -12,6 +12,8 @@ This project is managed by `Makefile` and `Makefile.inc`, thus you can simply ru
 
 ### Install & uninstall
 
+This repository uses [Git-LFS](https://git-lfs.github.com/) to track `dylib`, make sure `dylib` files are fetched to local before `make`.
+
 ```shell
 # Install/uninstall Quick Look plugin for current user
 make install
@@ -108,9 +110,12 @@ libmandoc2html.dylib:
 ### TODO
 
 * Add user-configurable options
- * [**DONE**] Allow user to use raw text thumbnail/preview
- * Allow user to specify preview width/height
- * ...
+
+ 	* [**DONE**] Allow user to use raw text thumbnail/preview
+
+ 	* Allow user to specify preview width/height
+
+ 	* ...
 
 * Use hash-encoded name to cache-up on-disk files
 
