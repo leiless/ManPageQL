@@ -151,7 +151,7 @@ out_dup:
     /* Restore stdout ASAP */
     (void) fflush(stdout);
 out_dup2:
-    if (dup2(fd, fileno(stdout)) != 0) {
+    if (dup2(fd, fileno(stdout)) == -1) {
         if (errno == EINTR) goto out_dup2;
         LOG_ERR("dup2(2) fail  %d -> %d errno: %d", fd, fileno(stdout), errno);
         /* Should never happen  stdout goes haywire */
