@@ -131,6 +131,8 @@ libmandoc2html.dylib:
 
 * Support man page symlink thumbnail/preview
 
+* Support custom `os_s` in `mparse_alloc(int, enum mandoc_os, const char *);`
+
 <br>
 
 ### *References*
