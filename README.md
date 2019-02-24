@@ -13,7 +13,7 @@ This project is managed by `Makefile` and `Makefile.inc`, thus you can simply ru
 ### Install & uninstall
 
 ```shell
-# Install/Uninstall Quick Look plugin for current user
+# Install/ninstall Quick Look plugin for current user
 make install
 make uninstall
 
@@ -45,12 +45,13 @@ syslog -w 0 -k Sender QuickLookSatellite -k Message S ManPageQL
 
 ### Compile `libmandoc2html` shared library
 
-`libmandoc2html` use `mandoc` as its core functionalities, it's merely a wrapper of `mandoc`, which this Quick Look plugin is link against it.
+`libmandoc2html` use [mandoc](https://mandoc.bsd.lv/) as its core functionalities, it's merely a wrapper of [mandoc](https://mandoc.bsd.lv/), which this Quick Look plugin is link against it.
 
-HOWTO compile `libmandoc2html.dylib` from latest `mandoc`
+HOWTO compile `libmandoc2html.dylib` from latest `mandoc` source
 
 ```shell
 # Clone mandoc CVS repository
+# see: https://mandoc.bsd.lv/anoncvs.html
 $ cvs -d anoncvs@mandoc.bsd.lv:/cvs co mandoc
 
 $ cd mandoc
@@ -92,7 +93,7 @@ libmandoc2html.dylib:
 
 * Support `.so` requests. Hint: use `chdir(2)` before generate output?
 
-* Support thumbnail/preview of `gzip`ed man page files
+* Support thumbnail/preview of `gzip`-ed man page files([mandoc](https://mandoc.bsd.lv/) supports parse `gzip`-ed man page file natively)
 
 	Hint: extensions: `.1.gz`, `.2.gz`, ...
 
