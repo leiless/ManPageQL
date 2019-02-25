@@ -83,6 +83,17 @@ static OSStatus htmlPreviewForURL(
     LOG("Preview %s  size: %zu UTI: %@ options: %@",
             path, size, contentTypeUTI, options);
 
+/*
+    CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR(PLUGIN_BID_S));
+    if (bundle == NULL) {
+        LOG_ERR("CFBundleGetBundleWithIdentifier() fail");
+    } else {
+        CFURLRef url = CFBundleCopyResourceURL(bundle, CFSTR("README"), CFSTR("txt"), NULL);
+        CF_SAFE_RELEASE(url);
+        CFRelease(bundle);
+    }
+*/
+
     CFRelease(cfdata);
 out_buffer:
     free(buffer);

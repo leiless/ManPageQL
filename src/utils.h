@@ -7,6 +7,10 @@
 #define PLUGIN_NAME_S "ManPageQL"
 #endif
 
+#ifndef PLUGIN_BID_S
+#define PLUGIN_BID_S    "cn.junkman.quicklook." PLUGIN_NAME_S
+#endif
+
 #define UNUSED(arg0, ...)   (void) ((void) arg0, ##__VA_ARGS__)
 
 #define LOG(fmt, ...)       NSLog(@PLUGIN_NAME_S ": " fmt "\n", ##__VA_ARGS__)

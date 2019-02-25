@@ -62,37 +62,36 @@ struct curparse {
 };
 
 static void outdata_alloc(struct curparse *);
-static int parse(const char *path);
 static int do_parse(struct curparse *curp, int, const char *);
 
-#ifdef BUILD_EXECUTABLE
+#ifdef DEBUG
 static void usage(void);
 
 void usage(void)
 {
-    fprintf(stderr, "usage: man_roff_file\n");
+    fprintf(stderr, "usage: file [style]\n");
     exit(-1);
     __builtin_unreachable();
 }
 
 int main(int argc, char *argv[])
 {
-    if (argc != 2) usage();
-    return parse(argv[1]);
+    const char *style = NULL;
+    if (argc != 2 && argv != 3) usage();
+    if (argv == 3) style = argv[2];
+    return mandoc2html(argv[1], style);
 }
 #endif
 
-int mandoc2html(const char *path)
-{
-    return parse(path);
-}
 
 /**
- * Parse a man page file
- * @path        which file
+ * Parse and format a man page file into HTML
+ * @path        man page file path
+ * @style       style sheet file path(NULL for internal style)
  * @return      0 if no error  error code o.w.
+ * NOTE: output prints to stdout due to mandoc limitation
  */
-int parse(const char *path)
+int mandoc2html(const char *path, const char *style)
 {
     int e;
     struct manconf conf;
@@ -105,9 +104,9 @@ int parse(const char *path)
 
     (void) memset(&conf, 0, sizeof(conf));
     (void) memset(&curp, 0, sizeof(curp));
+    conf.style = style;         /* I'm not use mandoc_strdup() */
     curp.outtype = OUTT_HTML;
     curp.outopts = &conf.output;
-    /* ASK: do we need MPARSE_SO flag */
     options = MPARSE_SO | MPARSE_UTF8 | MPARSE_LATIN1 | MPARSE_VALIDATE;
 
     /* Print parse warning to `stderr' */
@@ -144,6 +143,7 @@ int parse(const char *path)
 out_exit:
     mparse_free(curp.mp);
     mchars_free();
+    /* No need to manconf_free(&conf); */
 
     return e;
 }
