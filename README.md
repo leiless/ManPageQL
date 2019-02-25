@@ -133,6 +133,10 @@ libmandoc2html.dylib:
 
 * Support custom `os_s` in `mparse_alloc(int, enum mandoc_os, const char *);`
 
+* Support `-Ostyle=style.css` option in `mandoc2html`
+
+* Use `@rpath` instead of `@loader_path` in `libmandoc2html.dylib`?
+
 <br>
 
 ### *References*
