@@ -159,7 +159,7 @@ out_dup:
         goto out_close;
     }
 
-    e = mandoc2html(path);
+    e = mandoc2html(path, NULL);	/* TODO */
 
     /* Restore stdout ASAP */
     (void) fflush(stdout);

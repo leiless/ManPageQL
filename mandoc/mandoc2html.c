@@ -104,7 +104,7 @@ int mandoc2html(const char *path, const char *style)
 
     (void) memset(&conf, 0, sizeof(conf));
     (void) memset(&curp, 0, sizeof(curp));
-    conf.style = style;         /* I'm not use mandoc_strdup() */
+    conf.output.style = (char *) style;     /* I'm not use mandoc_strdup() */
     curp.outtype = OUTT_HTML;
     curp.outopts = &conf.output;
     options = MPARSE_SO | MPARSE_UTF8 | MPARSE_LATIN1 | MPARSE_VALIDATE;
