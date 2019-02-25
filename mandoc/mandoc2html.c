@@ -77,8 +77,8 @@ void usage(void)
 int main(int argc, char *argv[])
 {
     const char *style = NULL;
-    if (argc != 2 && argv != 3) usage();
-    if (argv == 3) style = argv[2];
+    if (argc != 2 && argc != 3) usage();
+    if (argc == 3) style = argv[2];
     return mandoc2html(argv[1], style);
 }
 #endif

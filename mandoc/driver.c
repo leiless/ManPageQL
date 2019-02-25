@@ -193,18 +193,20 @@ out_exit:
 
 void usage(void)
 {
-    fprintf(stderr, "usage: file\n");
+    fprintf(stderr, "usage: file [style]\n");
     exit(-1);
     __builtin_unreachable();
 }
 
 int main(int argc, char *argv[])
 {
-#if 1
+    const char *style = NULL;
+#if 0
     char *buffer = NULL;
     int e;
 
-    if (argc != 2) usage();
+    if (argc != 2 && argc != 3) usage();
+    if (argc == 3) style = argv[2];
 
     e = mandoc2html_buffer(argv[1], &buffer);
     if (e != 0) {
@@ -217,8 +219,9 @@ int main(int argc, char *argv[])
 
     return e;
 #else
-    if (argc != 2) usage();
-    return mandoc2html(argv[1]);
+    if (argc != 2 && argc != 3) usage();
+    if (argc == 3) style = argv[2];
+    return mandoc2html(argv[1], style);
 #endif
 }
 
