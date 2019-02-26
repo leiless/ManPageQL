@@ -81,7 +81,7 @@ static OSStatus htmlThumbnailForURL(
         goto out_cfpath;
     }
 
-    e = mandoc2html_buffer(path, style ? [style UTF8String] : NULL, &buffer, &size);
+    e = mandoc2html_buffer(path, absolutize_style_path(style), &buffer, &size);
     if (e != 0) {
         LOG_ERR("mandoc2html_buffer() fail  path: %s err: %d", path, (int) e);
         e = kGeneralFailureErr;

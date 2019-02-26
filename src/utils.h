@@ -33,6 +33,7 @@
 #define CF_SAFE_RELEASE(ref)    if (ref) CFRelease(ref)
 
 int mandoc2html_buffer(const char *, const char *, char **, size_t *);
+const char *absolutize_style_path(NSString * _Nullable);
 
 #endif	/* UTILS_H */
 

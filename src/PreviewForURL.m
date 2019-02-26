@@ -60,18 +60,7 @@ static OSStatus htmlPreviewForURL(
         goto out_cfpath;
     }
 
-/*
-    CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR(PLUGIN_BID_S));
-    if (bundle == NULL) {
-        LOG_ERR("CFBundleGetBundleWithIdentifier() fail");
-    } else {
-        CFURLRef url = CFBundleCopyResourceURL(bundle, CFSTR("README"), CFSTR("txt"), NULL);
-        CF_SAFE_RELEASE(url);
-        CFRelease(bundle);
-    }
-*/
-
-    e = mandoc2html_buffer(path, style ? [style UTF8String] : NULL, &buffer, &size);
+    e = mandoc2html_buffer(path, absolutize_style_path(style), &buffer, &size);
     if (e != 0) {
         LOG_ERR("mandoc2html_buffer() fail  url: %s err: %d", path, (int) e);
         e = kGeneralFailureErr;

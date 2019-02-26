@@ -180,3 +180,29 @@ out_exit:
     return e;
 }
 
+/**
+ * Convert a relative path into absolute path under bundle Resources directory
+ * @style       style sheet file path
+ * @return      an UTF-8 encoded C-string
+ */
+const char *absolutize_style_path(NSString * _Nullable style)
+{
+    static NSString *iden = @PLUGIN_BID_S;
+    NSString *path = style ? [style stringByExpandingTildeInPath] : nil;
+    NSBundle *bundle;
+
+    /* If cannot convert to UTF-8 or already absolute */
+    if (path == nil || [path characterAtIndex:0] == '/') goto out_exit;
+
+    bundle = [NSBundle bundleWithIdentifier:iden];
+    if (bundle == nil) {
+        path = nil;         /* NULLify relative path */
+        goto out_exit;
+    }
+
+    path = [bundle pathForResource:path ofType:nil];
+
+out_exit:
+    return path ? [path UTF8String] : NULL;
+}
+
