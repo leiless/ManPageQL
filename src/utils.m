@@ -91,6 +91,8 @@ out_exit:
 /**
  * Convert man page into HTML
  *
+ * @path        man page file path
+ * @style       style sheet file path(NULL for internal style)
  * @buffp       Pointer to buffer
  * @sizep       Pointer to length of buffer(count EOS)
  * @return      0 is success  error code otherwise
@@ -101,7 +103,7 @@ out_exit:
  *  http://kaskavalci.com/redirecting-stdout-to-array-and-restoring-it-back-in-c/
  *  https://www.experts-exchange.com/questions/20420198/How-to-return-to-stdout-after-freopen.html
  */
-int mandoc2html_buffer(const char *path, char **buffp, size_t *sizep)
+int mandoc2html_buffer(const char *path, const char *style, char **buffp, size_t *sizep)
 {
     char template[] = "/tmp/.ManPageQL-XXXXXXXXXXXX";
     char *tmp;
@@ -146,7 +148,7 @@ out_dup:
         goto out_close;
     }
 
-    e = mandoc2html(path);
+    e = mandoc2html(path, style);
 
     /* Restore stdout ASAP */
     (void) fflush(stdout);

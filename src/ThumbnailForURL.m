@@ -49,7 +49,8 @@ static OSStatus htmlThumbnailForURL(
         CFURLRef url,
         CFStringRef contentTypeUTI,
         CFDictionaryRef options,
-        CGSize maxSize)
+        CGSize maxSize,
+        NSString * _Nullable style)
 {
     OSStatus e = noErr;
     NSDictionary *previewProperties = nil;
@@ -80,7 +81,7 @@ static OSStatus htmlThumbnailForURL(
         goto out_cfpath;
     }
 
-    e = mandoc2html_buffer(path, &buffer, &size);
+    e = mandoc2html_buffer(path, style ? [style UTF8String] : NULL, &buffer, &size);
     if (e != 0) {
         LOG_ERR("mandoc2html_buffer() fail  path: %s err: %d", path, (int) e);
         e = kGeneralFailureErr;
@@ -131,13 +132,18 @@ OSStatus GenerateThumbnailForURL(
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *defaults = [userDefaults persistentDomainForName:@"cn.junkman.quicklook.ManPageQL"];
     id isRaw = nil;
+    id style = nil;
 
-    if (defaults != nil) isRaw = [defaults valueForKey:@"RawTextForThumbnail"];
+    if (defaults != nil) {
+        isRaw = [defaults valueForKey:@"RawTextForThumbnail"];
+        style = [defaults valueForKey:@"StyleSheetForThumbnail"];
+        if (![style isKindOfClass:[NSString class]]) style = nil;
+    }
 
     if (isRaw != nil && [isRaw boolValue]) {
         e = rawTextThumbnailForURL(thisInterface, thumbnail, url, contentTypeUTI, options, maxSize);
     } else {
-        e = htmlThumbnailForURL(thisInterface, thumbnail, url, contentTypeUTI, options, maxSize);
+        e = htmlThumbnailForURL(thisInterface, thumbnail, url, contentTypeUTI, options, maxSize, style);
     }
 
     return e;

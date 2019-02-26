@@ -60,6 +60,26 @@ syslog -w 0 -k Sender QuickLookSatellite -k Message S ManPageQL
 	defaults write cn.junkman.quicklook.ManPageQL RawTextForThumbnail -bool TRUE
 	```
 
+* Use custom style sheet for preview
+
+	```shell
+	defaults write cn.junkman.quicklook.ManPageQL StyleSheetForPreview -string <file>
+	```
+
+	The `<file>` is a path to the custom style sheet file, it can either be a absolute path, or a relative path, when specify a relative path, the file will located from plugin bundle's `Resources` directory.
+
+	There're several embedded style sheets in `Resources` directory:
+
+	* mandoc.css
+
+	* fixed.css
+
+* Use custom style sheet for thumbnail
+
+	```shell
+	defaults write cn.junkman.quicklook.ManPageQL StyleSheetForThumbnail -string <file>
+	```
+
 ### Screenshots
 
 ![](screenshots/1.png)

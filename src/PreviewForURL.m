@@ -35,7 +35,8 @@ static OSStatus htmlPreviewForURL(
         QLPreviewRequestRef preview,
         CFURLRef url,
         CFStringRef contentTypeUTI,
-        CFDictionaryRef options)
+        CFDictionaryRef options,
+        NSString * _Nullable style)
 {
     OSStatus e = noErr;
     NSDictionary *previewProperties = nil;
@@ -59,7 +60,18 @@ static OSStatus htmlPreviewForURL(
         goto out_cfpath;
     }
 
-    e = mandoc2html_buffer(path, &buffer, &size);
+/*
+    CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR(PLUGIN_BID_S));
+    if (bundle == NULL) {
+        LOG_ERR("CFBundleGetBundleWithIdentifier() fail");
+    } else {
+        CFURLRef url = CFBundleCopyResourceURL(bundle, CFSTR("README"), CFSTR("txt"), NULL);
+        CF_SAFE_RELEASE(url);
+        CFRelease(bundle);
+    }
+*/
+
+    e = mandoc2html_buffer(path, style ? [style UTF8String] : NULL, &buffer, &size);
     if (e != 0) {
         LOG_ERR("mandoc2html_buffer() fail  url: %s err: %d", path, (int) e);
         e = kGeneralFailureErr;
@@ -82,17 +94,6 @@ static OSStatus htmlPreviewForURL(
 
     LOG("Preview %s  size: %zu UTI: %@ options: %@",
             path, size, contentTypeUTI, options);
-
-/*
-    CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR(PLUGIN_BID_S));
-    if (bundle == NULL) {
-        LOG_ERR("CFBundleGetBundleWithIdentifier() fail");
-    } else {
-        CFURLRef url = CFBundleCopyResourceURL(bundle, CFSTR("README"), CFSTR("txt"), NULL);
-        CF_SAFE_RELEASE(url);
-        CFRelease(bundle);
-    }
-*/
 
     CFRelease(cfdata);
 out_buffer:
@@ -118,13 +119,18 @@ OSStatus GeneratePreviewForURL(
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *defaults = [userDefaults persistentDomainForName:@"cn.junkman.quicklook.ManPageQL"];
     id isRaw = nil;
+    id style = nil;
 
-    if (defaults != nil) isRaw = [defaults valueForKey:@"RawTextForPreview"];
+    if (defaults != nil) {
+        isRaw = [defaults valueForKey:@"RawTextForPreview"];
+        style = [defaults valueForKey:@"StyleSheetForPreview"];
+        if (![style isKindOfClass:[NSString class]]) style = nil;
+    }
 
     if (isRaw != nil && [isRaw boolValue]) {
         e = rawTextPreviewForURL(thisInterface, preview, url, contentTypeUTI, options);
     } else {
-        e = htmlPreviewForURL(thisInterface, preview, url, contentTypeUTI, options);
+        e = htmlPreviewForURL(thisInterface, preview, url, contentTypeUTI, options, style);
     }
 
     return e;
