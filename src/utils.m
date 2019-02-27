@@ -202,7 +202,7 @@ const char *absolutize_style_path(NSString * _Nullable style)
 
     path = [bundle pathForResource:path ofType:nil];
     if (path == NULL) {
-        LOG_ERR("%@ cannot found under %@", style, [bundle resourcePath]);
+        LOG_ERR("Cannot found %@ under %@", style, [bundle resourcePath]);
     }
 
 out_exit:

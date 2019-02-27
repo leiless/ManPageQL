@@ -135,7 +135,7 @@ libmandoc2html.dylib:
 
 * Support universal man page file detection, instead of known extensions like `.1`, `.2`, ...
 
-	Hint: use `file --brief --mime-type FILE` for detection?
+	Hint: use `file --brief --mime-type <file>` for detection?
 
 * Support man page symlink thumbnail/preview
 
@@ -147,7 +147,9 @@ libmandoc2html.dylib:
 
 * Support `nroff(1)` + cat2html for thumbnail/preview?
 
-<br>
+* Display file size, time, etc. when preview.
+
+	Hint: set `kQLPreviewPropertyDisplayNameKey` in preview properties
 
 ### Contributing
 
