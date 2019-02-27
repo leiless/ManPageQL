@@ -8,7 +8,7 @@ Current only support limited man page extensions: `.1`, `.2`, `.3`, `.4`, `.5`, 
 
 ### Compile
 
-This repository uses [Git-LFS](https://git-lfs.github.com/) to track `dylib`, make sure `dylib` files are fetched to local before `make`.
+NOTE: This repository uses [Git-LFS](https://git-lfs.github.com/) to track `dylib`, make sure `dylib` files are fetched to local before `make`.
 
 This project is managed by `Makefile` and `Makefile.inc`, thus you can simply run `make` in terminal for a debug build, append `release` for a release build.
 
@@ -60,33 +60,21 @@ syslog -w 0 -k Sender QuickLookSatellite -k Message S ManPageQL
 	defaults write cn.junkman.quicklook.ManPageQL RawTextForThumbnail -bool TRUE
 	```
 
-* Use custom style sheet for preview
+* Use custom style sheet for preview(won't affect behaviour of manual page thumbnailing)
 
 	```shell
 	defaults write cn.junkman.quicklook.ManPageQL StyleSheetForPreview -string <file>
 	```
 
-	The `<file>` is a path to the custom style sheet file, it can either be a absolute path, or a relative path, when specify a relative path, the file will located from plugin bundle's `Resources` directory.
+	The `<file>` is a path to the custom style sheet file, it can either be a absolute path, or a relative path, when specify a relative path, the file will search from plugin bundle's `Resources` directory.
+
+	`~`, `.`, `..` are thusly supported.
 
 	There're several embedded style sheets in `Resources` directory:
 
 	* mandoc.css
 
 	* fixed.css
-
-* Use custom style sheet for thumbnail
-
-	```shell
-	defaults write cn.junkman.quicklook.ManPageQL StyleSheetForThumbnail -string <file>
-	```
-
-### Screenshots
-
-![](screenshots/1.png)
-
-![](screenshots/2.png)
-
-![](screenshots/3.png)
 
 ### Compile `libmandoc2html` shared library
 
@@ -153,13 +141,37 @@ libmandoc2html.dylib:
 
 * Support custom `os_s` in `mparse_alloc(int, enum mandoc_os, const char *);`
 
-* Support `-Ostyle=style.css` option in `mandoc2html`
+* [**DONE**] Support `-Ostyle=style.css` option in `mandoc2html`
 
 * Use `@rpath` instead of `@loader_path` in `libmandoc2html.dylib`?
 
-* Support `nroff(1)` + cat2html for thumbnail/preview
+* Support `nroff(1)` + cat2html for thumbnail/preview?
 
 <br>
+
+### Contributing
+
+If you ready to gets your hands dirty, here are the guidelines for contributing:
+
+* Fork this repository and clone to your local machine
+
+* Create a new branch and add some commits
+
+* Push your local branch to your fork
+
+* Submit a pull request upstream
+
+### License
+
+Please regard `LICENSE` file
+
+### Screenshots
+
+![](screenshots/1.png)
+
+![](screenshots/2.png)
+
+![](screenshots/3.png)
 
 ### *References*
 
