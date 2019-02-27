@@ -157,6 +157,8 @@ libmandoc2html.dylib:
 
 * Use `@rpath` instead of `@loader_path` in `libmandoc2html.dylib`?
 
+* Support `nroff(1)` + cat2html for thumbnail/preview
+
 <br>
 
 ### *References*
@@ -170,6 +172,10 @@ libmandoc2html.dylib:
 [Creating Dynamic Libraries](https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/DynamicLibraries/100-Articles/CreatingDynamicLibraries.html)
 
 [ExampleQL - Makefile for macOS Quick Look plugin](https://github.com/lynnlx/quicklook_plugin)
+
+[How to open/link external files inside a HTML-designed QuickLook plugin without using the <src> attribute?](https://stackoverflow.com/questions/23758539/how-to-open-link-external-files-inside-a-html-designed-quicklook-plugin-without)
+
+[Dynamically Generating Previews#Generating Enriched HTML](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/Quicklook_Programming_Guide/Articles/QLDynamicGeneration.html#//apple_ref/doc/uid/TP40005020-CH15-SW2)
 
 ---
 
