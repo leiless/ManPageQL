@@ -21,7 +21,8 @@
 #define LOG_DBG(fmt, ...)   (void) ((void) 0, ##__VA_ARGS__)
 #endif
 
-#define assert_nonnull(p)   assert(p != NULL)
+#define CASSERT             assert
+#define CASSERT_NONNULL(p)  CASSERT(p != NULL)
 
 /**
  * Get length of a file stream
@@ -57,10 +58,11 @@ out_exit:
 /**
  * Read file content into buffer
  * @buffp       Pointer to buffer
+ * @sizep       Pointer to length of buffer(count EOS)
  * @return      0 if success  -1 otherwise(errno will be set)
  *              you're responsible to free(3) *buffp if success
  */
-static int read2buffer(const char *path, char **buffp)
+static int read2buffer(const char *path, char **buffp, size_t *sizep)
 {
     int e = -1;
     FILE *fp;
@@ -68,9 +70,10 @@ static int read2buffer(const char *path, char **buffp)
     char *buffer;
     long size2;
 
-    assert_nonnull(path);
-    assert_nonnull(buffp);
-    assert(*buffp == NULL);
+    CASSERT_NONNULL(path);
+    CASSERT_NONNULL(buffp);
+    CASSERT_NONNULL(sizep);
+    CASSERT(*buffp == NULL);
 
     fp = fopen(path, "r");
     if (fp == NULL) {
@@ -91,6 +94,7 @@ static int read2buffer(const char *path, char **buffp)
     if (ferror(fp) == 0) {
         e = 0;
         *buffp = buffer;
+        *sizep = size + 1;
         buffer[size2++] = '\0';
     } else {
         LOG_ERR("fread(3) fail  read: %ld vs %ld errno: %d", size2, size, errno);
@@ -106,7 +110,10 @@ out_exit:
 /**
  * Convert man page into HTML
  *
+ * @path        man page file path
+ * @style       style sheet file path(NULL for internal style)
  * @buffp       Pointer to buffer
+ * @sizep       Pointer to length of buffer(count EOS)
  * @return      0 is success  error code otherwise
  *              you're responsible to free(3) *buffp if success
  *
@@ -115,7 +122,7 @@ out_exit:
  *  http://kaskavalci.com/redirecting-stdout-to-array-and-restoring-it-back-in-c/
  *  https://www.experts-exchange.com/questions/20420198/How-to-return-to-stdout-after-freopen.html
  */
-int mandoc2html_buffer(const char *path, char **buffp)
+int mandoc2html_buffer(const char *path, const char *style, char **buffp, size_t *sizep)
 {
     char template[] = "/tmp/.ManPageQL-XXXXXXXXXXXX";
     char *tmp;
@@ -124,9 +131,10 @@ int mandoc2html_buffer(const char *path, char **buffp)
     fpos_t pos;
     int e;
 
-    assert_nonnull(path);
-    assert_nonnull(buffp);
-    assert(*buffp == NULL);
+    CASSERT_NONNULL(path);
+    CASSERT_NONNULL(buffp);
+    CASSERT_NONNULL(sizep);
+    CASSERT(*buffp == NULL);
 
     /* mktemp(3)'s template must on heap  otherwise you got bus error: 10 */
     tmp = mktemp(template);
@@ -159,7 +167,7 @@ out_dup:
         goto out_close;
     }
 
-    e = mandoc2html(path, NULL);	/* TODO */
+    e = mandoc2html(path, style);
 
     /* Restore stdout ASAP */
     (void) fflush(stdout);
@@ -177,7 +185,7 @@ out_dup2:
     }
 
     if (e == M2H_ERR_SUCCESS) {
-        if ((e = read2buffer(tmp, buffp)) != 0) {
+        if ((e = read2buffer(tmp, buffp, sizep)) != 0) {
             e = -5;  /* Reassign an error code */
         }
     }
@@ -201,18 +209,19 @@ void usage(void)
 int main(int argc, char *argv[])
 {
     const char *style = NULL;
-#if 0
+#if 1
     char *buffer = NULL;
+    size_t size;
     int e;
 
     if (argc != 2 && argc != 3) usage();
     if (argc == 3) style = argv[2];
 
-    e = mandoc2html_buffer(argv[1], &buffer);
+    e = mandoc2html_buffer(argv[1], style, &buffer, &size);
     if (e != 0) {
         LOG_ERR("mandoc2html_buffer() fail  error: %d", e);
     } else {
-        assert_nonnull(buffer);
+        CASSERT_NONNULL(buffer);
         LOG("%s", buffer);
         free(buffer);
     }
