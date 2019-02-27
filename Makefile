@@ -149,6 +149,8 @@ ifdef COPYRIGHT
 endif
 
 	cp mandoc/libmandoc2html.dylib $@/Contents/MacOS
+	mkdir -p $@/Contents/Resources
+	cp mandoc/mandoc.css $@/Contents/Resources
 
 ifdef SIGNCERT
 	$(CODESIGN) --force --timestamp=none --sign $(SIGNCERT) $@
