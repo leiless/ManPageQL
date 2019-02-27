@@ -191,7 +191,7 @@ const char *absolutize_style_path(NSString * _Nullable style)
     NSString *path = style ? [style stringByExpandingTildeInPath] : nil;
     NSBundle *bundle;
 
-    /* If cannot convert to UTF-8 or already absolute */
+    /* If style not provided or already absolute */
     if (path == nil || [path characterAtIndex:0] == '/') goto out_exit;
 
     bundle = [NSBundle bundleWithIdentifier:iden];
@@ -201,6 +201,9 @@ const char *absolutize_style_path(NSString * _Nullable style)
     }
 
     path = [bundle pathForResource:path ofType:nil];
+    if (path == NULL) {
+        LOG_ERR("%@ cannot found under %@", style, [bundle resourcePath]);
+    }
 
 out_exit:
     return path ? [path UTF8String] : NULL;

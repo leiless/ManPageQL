@@ -30,6 +30,33 @@ static OSStatus rawTextPreviewForURL(
     return noErr;
 }
 
+#define RSRC_CID_BASE   "css"
+#define RSRC_CID_FULL   "cid:" RSRC_CID_BASE
+
+static void setPreviewStyleProperty(
+        const char * _Nullable path,
+        NSMutableDictionary *properties)
+{
+    NSData *data;
+
+    if (path == NULL) return;
+
+    data = [NSData dataWithContentsOfFile:@(path)];
+    if (data == nil) {
+        LOG_ERR("[NSData dataWithContentsOfFile:] fail  path: %s", path);
+        return;
+    }
+
+    [properties
+        setObject:@{ @RSRC_CID_BASE : @{
+                (__bridge NSString *) kQLPreviewPropertyMIMETypeKey : @"text/css",
+                (__bridge NSString *) kQLPreviewPropertyAttachmentDataKey: data
+            }
+        }
+        forKey:(__bridge NSString *) kQLPreviewPropertyAttachmentsKey
+    ];
+}
+
 static OSStatus htmlPreviewForURL(
         void *thisInterface,
         QLPreviewRequestRef preview,
@@ -39,7 +66,7 @@ static OSStatus htmlPreviewForURL(
         NSString * _Nullable style)
 {
     OSStatus e = noErr;
-    NSDictionary *previewProperties = nil;
+    NSMutableDictionary *properties = [NSMutableDictionary dictionary];
     CFStringRef cfpath;
     const char *path;
     char *buffer = NULL;
@@ -60,7 +87,7 @@ static OSStatus htmlPreviewForURL(
         goto out_cfpath;
     }
 
-    e = mandoc2html_buffer(path, absolutize_style_path(style), &buffer, &size);
+    e = mandoc2html_buffer(path, style ? RSRC_CID_FULL : NULL, &buffer, &size);
     if (e != 0) {
         LOG_ERR("mandoc2html_buffer() fail  url: %s err: %d", path, (int) e);
         e = kGeneralFailureErr;
@@ -74,11 +101,13 @@ static OSStatus htmlPreviewForURL(
         goto out_buffer;
     }
 
+    setPreviewStyleProperty(absolutize_style_path(style), properties);
+
     QLPreviewRequestSetDataRepresentation(
         preview,
         cfdata,
         kUTTypeHTML,
-        (__bridge CFDictionaryRef) previewProperties
+        (__bridge CFDictionaryRef) properties
     );
 
     LOG("Preview %s  size: %zu UTI: %@ options: %@",
