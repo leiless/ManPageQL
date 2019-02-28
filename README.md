@@ -136,9 +136,9 @@ libmandoc2html.dylib:
 
 * Add user-configurable options
 
- 	* [**DONE**] Allow user to use raw text thumbnail/preview
+	* [**DONE**] Allow user to use raw text thumbnail/preview
 
- 	* Allow user to specify preview width/height
+	* [**DONE**] Allow user to specify preview width/height
 
  	* ...
 

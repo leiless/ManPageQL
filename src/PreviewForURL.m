@@ -34,8 +34,8 @@ static OSStatus rawTextPreviewForURL(
 #define RSRC_CID_FULL   "cid:" RSRC_CID_BASE
 
 static void setPreviewStyleProperty(
-        const char * _Nullable path,
-        NSMutableDictionary *properties)
+        NSMutableDictionary *properties,
+        const char * _Nullable path)
 {
     NSData *data;
 
@@ -133,7 +133,7 @@ static OSStatus htmlPreviewForURL(
         goto out_buffer;
     }
 
-    setPreviewStyleProperty(absolutize_style_path(style), properties);
+    setPreviewStyleProperty(properties, absolutize_style_path(style));
     setPreviewWidthHeightProperty(properties, defaults);
 
     QLPreviewRequestSetDataRepresentation(
