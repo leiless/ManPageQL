@@ -72,7 +72,7 @@ syslog -w 0 -k Sender QuickLookSatellite -k Message S ManPageQL
 	800:600 # Specify width & height
 	800     # Specify width only
 	800:    # ditto.
-	:600    # Specify height only
+	:600    # Specify height only(XXX: Quick Look daemon will ignore if you specify height solely)
 	```
 
 	[[sic](https://developer.apple.com/documentation/quicklook/kqlpreviewpropertywidthkey?language=objc)] Note that this(width, height) property is a hint; Quick Look might set the width automatically for some types of previews.

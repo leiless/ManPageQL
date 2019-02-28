@@ -82,7 +82,7 @@ static void setPreviewWidthHeightProperty(
     if (w > 0) [properties setObject:@(w) forKey:(__bridge NSString *) kQLPreviewPropertyWidthKey];
     if (h > 0) [properties setObject:@(h) forKey:(__bridge NSString *) kQLPreviewPropertyHeightKey];
 
-    LOG("Preview  width: %ld height: %ld", w, h);
+    LOG_DBG("Preview  width: %ld height: %ld", w, h);
 }
 
 static OSStatus htmlPreviewForURL(
