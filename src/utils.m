@@ -209,3 +209,38 @@ out_exit:
     return path ? [path UTF8String] : NULL;
 }
 
+/**
+ * [sic strtol(3)] Convert a string value to a long
+ *
+ * @str     the value string
+ * @delim   delimiter character(an invalid one) for a success match
+ *          note '\0' for a strict match
+ *          other value indicate a substring conversion
+ *          NOTE: plus & minus sign need special care
+ * @base    numeric base
+ * @val     where to store parsed long value
+ * @return  1 if parsed successfully  0 o.w.
+ *
+ * see: https://stackoverflow.com/a/14176593/10725426
+ */
+int parse_long(const char *str, char delim, int base, long *val)
+{
+    int ok = 1;
+    char *p;
+    long t;
+
+    CASSERT_NONNULL(str);
+    CASSERT_NONNULL(val);
+
+    errno = 0;
+    t = strtol(str, &p, base);
+
+    if (p == str || *p != delim || (errno == ERANGE && (t == LONG_MIN || t == LONG_MAX))) {
+        ok = 0;
+    } else {
+        *val = t;
+    }
+
+    return ok;
+}
+

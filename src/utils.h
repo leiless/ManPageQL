@@ -34,6 +34,7 @@
 
 int mandoc2html_buffer(const char *, const char *, char **, size_t *);
 const char *absolutize_style_path(NSString * _Nullable);
+int parse_long(const char *, char, int, long *);
 
 #endif	/* UTILS_H */
 

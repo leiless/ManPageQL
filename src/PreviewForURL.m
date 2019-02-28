@@ -57,13 +57,41 @@ static void setPreviewStyleProperty(
     ];
 }
 
+static void setPreviewWidthHeightProperty(
+        NSMutableDictionary *properties,
+        NSDictionary * _Nullable defaults)
+{
+    NSString *wh = defaults ? [defaults valueForKey:@"WidthHeightForPreview"] : nil;
+    const char *str;
+    const char *p;
+    long w = -1, h = -1;
+
+    if (wh == nil || ![wh isKindOfClass:[NSString class]]) return;
+    if ((str = [wh UTF8String]) == NULL) return;
+
+    p = strchr(str, ':');
+    if (p == NULL) {
+        (void) parse_long(str, '\0', 10, &w);
+    } else if (p - str == 0) {
+        (void) parse_long(p + 1, '\0', 10, &h);
+    } else {
+        (void) parse_long(str, ':', 10, &w);
+        (void) parse_long(p + 1, '\0', 10, &h);
+    }
+
+    if (w > 0) [properties setObject:@(w) forKey:(__bridge NSString *) kQLPreviewPropertyWidthKey];
+    if (h > 0) [properties setObject:@(h) forKey:(__bridge NSString *) kQLPreviewPropertyHeightKey];
+
+    LOG("Preview  width: %ld height: %ld", w, h);
+}
+
 static OSStatus htmlPreviewForURL(
         void *thisInterface,
         QLPreviewRequestRef preview,
         CFURLRef url,
         CFStringRef contentTypeUTI,
         CFDictionaryRef options,
-        NSString * _Nullable style)
+        NSDictionary * _Nullable defaults)
 {
     OSStatus e = noErr;
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
@@ -72,6 +100,10 @@ static OSStatus htmlPreviewForURL(
     char *buffer = NULL;
     size_t size;
     CFDataRef cfdata;
+    id style = defaults ? [defaults valueForKey:@"StyleSheetForPreview"] : nil;
+
+    /* If style property holds malformed value */
+    if (![style isKindOfClass:[NSString class]]) style = nil;
 
     cfpath = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
     if (cfpath == NULL) {
@@ -102,6 +134,7 @@ static OSStatus htmlPreviewForURL(
     }
 
     setPreviewStyleProperty(absolutize_style_path(style), properties);
+    setPreviewWidthHeightProperty(properties, defaults);
 
     QLPreviewRequestSetDataRepresentation(
         preview,
@@ -136,19 +169,12 @@ OSStatus GeneratePreviewForURL(
     OSStatus e;
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *defaults = [userDefaults persistentDomainForName:@"cn.junkman.quicklook.ManPageQL"];
-    id isRaw = nil;
-    id style = nil;
-
-    if (defaults != nil) {
-        isRaw = [defaults valueForKey:@"RawTextForPreview"];
-        style = [defaults valueForKey:@"StyleSheetForPreview"];
-        if (![style isKindOfClass:[NSString class]]) style = nil;
-    }
+    id isRaw = defaults ? [defaults valueForKey:@"RawTextForPreview"] : nil;
 
     if (isRaw != nil && [isRaw boolValue]) {
         e = rawTextPreviewForURL(thisInterface, preview, url, contentTypeUTI, options);
     } else {
-        e = htmlPreviewForURL(thisInterface, preview, url, contentTypeUTI, options, style);
+        e = htmlPreviewForURL(thisInterface, preview, url, contentTypeUTI, options, defaults);
     }
 
     return e;
