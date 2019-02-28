@@ -60,6 +60,23 @@ syslog -w 0 -k Sender QuickLookSatellite -k Message S ManPageQL
 	defaults write cn.junkman.quicklook.ManPageQL RawTextForThumbnail -bool TRUE
 	```
 
+* Specify preview width / height
+
+	```shell
+	defaults write cn.junkman.quicklook.ManPageQL WidthHeightForPreview -string <width>:<height>
+	```
+
+	`width` and `<height>` are numbers in points, you can omit one of them.
+
+	```
+	800:600 # Specify width & height
+	800     # Specify width only
+	800:    # ditto.
+	:600    # Specify height only
+	```
+
+	[[sic](https://developer.apple.com/documentation/quicklook/kqlpreviewpropertywidthkey?language=objc)] Note that this(width, height) property is a hint; Quick Look might set the width automatically for some types of previews.
+
 * Use custom style sheet for preview(won't affect behaviour of manual page thumbnailing)
 
 	```shell
